@@ -1,0 +1,117 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: erp-backend-blue
+  namespace: erp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: erp-backend
+      color: blue
+  template:
+    metadata:
+      labels:
+        app: erp-backend
+        color: blue
+    spec:
+      containers:
+      - name: backend
+        image: your-registry.com/erp-backend:latest
+        # ... rest of container spec ...
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: erp-backend-green
+  namespace: erp
+spec:
+  replicas: 0  # Initially scaled down
+  selector:
+    matchLabels:
+      app: erp-backend
+      color: green
+  template:
+    metadata:
+      labels:
+        app: erp-backend
+        color: green
+    spec:
+      containers:
+      - name: backend
+        image: your-registry.com/erp-backend:latest
+        # ... rest of container spec ...
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: erp-backend
+  namespace: erp
+  labels:
+    app: erp-backend
+spec:
+  selector:
+    app: erp-backend
+    color: blue  # Initially points to blue
+  ports:
+  - port: 8000
+    targetPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: erp-frontend-blue
+  namespace: erp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: erp-frontend
+      color: blue
+  template:
+    metadata:
+      labels:
+        app: erp-frontend
+        color: blue
+    spec:
+      containers:
+      - name: frontend
+        image: your-registry.com/erp-frontend:latest
+        # ... rest of container spec ...
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: erp-frontend-green
+  namespace: erp
+spec:
+  replicas: 0  # Initially scaled down
+  selector:
+    matchLabels:
+      app: erp-frontend
+      color: green
+  template:
+    metadata:
+      labels:
+        app: erp-frontend
+        color: green
+    spec:
+      containers:
+      - name: frontend
+        image: your-registry.com/erp-frontend:latest
+        # ... rest of container spec ...
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: erp-frontend
+  namespace: erp
+  labels:
+    app: erp-frontend
+spec:
+  selector:
+    app: erp-frontend
+    color: blue  # Initially points to blue
+  ports:
+  - port: 80
+    targetPort: 80

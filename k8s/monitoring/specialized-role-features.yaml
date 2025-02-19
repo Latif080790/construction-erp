@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: specialized-role-features
+  namespace: monitoring
+data:
+  specialist_waterproofing.yaml: |
+    fitur:
+      aplikasi_waterproofing:
+        inspeksi:
+          - tahap: "persiapan_permukaan"
+            parameter:
+              - "moisture_content"
+              - "surface_profile"
+              - "crack_mapping"
+          - tahap: "aplikasi"
+            parameter:
+              - "ketebalan_lapisan"
+              - "overlap_joint"
+              - "detail_sudut"
+        pengujian:
+          metode:
+            - "flood_test"
+            - "electronic_leak_detection"
+            - "vacuum_test"
+
+  facade_engineer.yaml: |
+    fitur:
+      desain_facade:
+        analisis:
+          - aspek: "thermal"
+            parameter:
+              - "u_value"
+              - "shgc"
+              - "condensation_risk"
+          - aspek: "struktural"
+            parameter:
+              - "wind_load"
+              - "movement_joint"
+              - "seismic_requirement"
+        simulasi:
+          software:
+            - "thermal_modeling"
+            - "wind_tunnel_simulation"
+            - "rainfall_test_prediction"
+
+  lift_engineer.yaml: |
+    fitur:
+      sistem_transportasi_vertikal:
+        analisis:
+          - tipe: "traffic_study"
+            parameter:
+              - "handling_capacity"
+              - "waiting_time"
+              - "interval_time"
+          - tipe: "energy_efficiency"
+            parameter:
+              - "power_consumption"
+              - "regenerative_drive"
+              - "standby_mode"
+        monitoring:
+          real_time:
+            - "operational_status"
+            - "maintenance_alert"
+            - "emergency_response"
+
+  landscape_architect.yaml: |
+    fitur:
+      desain_landscape:
+        perencanaan:
+          - area: "softscape"
+            parameter:
+              - "jenis_tanaman"
+              - "irrigation_need"
+              - "maintenance_level"
+          - area: "hardscape"
+            parameter:
+              - "material_durability"
+              - "drainage_system"
+              - "lighting_requirement"
+        sustainability:
+          analisis:
+            - "water_efficiency"
+            - "heat_island_effect"
+            - "biodiversity_impact"

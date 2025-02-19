@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: case-specific-predictions
+  namespace: analytics
+data:
+  prediksi_keterlambatan.yaml: |
+    model:
+      analisis_jadwal:
+        parameter:
+          - faktor: "cuaca"
+            variabel:
+              - "curah_hujan"
+              - "kecepatan_angin"
+              - "visibility"
+          - faktor: "sumber_daya"
+            variabel:
+              - "ketersediaan_material"
+              - "produktivitas_pekerja"
+              - "kondisi_peralatan"
+        mitigasi:
+          strategi:
+            - "penyesuaian_metode"
+            - "penambahan_resources"
+            - "optimasi_sequence"
+
+  prediksi_biaya_overrun.yaml: |
+    model:
+      analisis_varians:
+        parameter:
+          - kategori: "direct_cost"
+            variabel:
+              - "harga_material"
+              - "upah_pekerja"
+              - "sewa_peralatan"
+          - kategori: "indirect_cost"
+            variabel:
+              - "overhead_proyek"
+              - "biaya_operasional"
+              - "administrasi"
+        tindakan:
+          otomatis:
+            - "identifikasi_penyebab"
+            - "opsi_penghematan"
+            - "rekomendasi_efisiensi"
+
+  prediksi_kegagalan_struktur.yaml: |
+    model:
+      analisis_struktural:
+        parameter:
+          - aspek: "pembebanan"
+            variabel:
+              - "beban_mati"
+              - "beban_hidup"
+              - "beban_lateral"
+          - aspek: "material"
+            variabel:
+              - "kekuatan_aktual"
+              - "deformasi"
+              - "durabilitas"
+        pencegahan:
+          sistem:
+            - "monitoring_real_time"
+            - "early_warning"
+            - "prosedur_evakuasi"
+
+  prediksi_konflik_mep.yaml: |
+    model:
+      analisis_interferensi:
+        parameter:
+          - sistem: "mechanical"
+            variabel:
+              - "ducting_path"
+              - "equipment_space"
+              - "maintenance_access"
+          - sistem: "electrical"
+            variabel:
+              - "cable_tray"
+              - "panel_location"
+              - "service_zone"
+        resolusi:
+          metode:
+            - "clash_detection"
+            - "route_optimization"
+            - "space_allocation"

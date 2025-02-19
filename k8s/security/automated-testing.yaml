@@ -1,0 +1,121 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: security-testing-scenarios
+  namespace: security
+data:
+  document-access-tests.yaml: |
+    scenarios:
+      - name: "unauthorized_blueprint_access"
+        steps:
+          - action: "attempt_access"
+            user: "unauthorized_user"
+            resource: "blueprints/structural/*"
+            expected: "access_denied"
+          - action: "verify_logging"
+            check: "incident_logged"
+            severity: "high"
+
+      - name: "contract_modification_attempt"
+        steps:
+          - action: "modify_document"
+            user: "regular_user"
+            resource: "contracts/active/*"
+            expected: "modification_blocked"
+          - action: "verify_notification"
+            recipient: "security_team"
+            type: "tampering_attempt"
+
+  compliance-validation-tests.yaml: |
+    scenarios:
+      - name: "safety_record_compliance"
+        steps:
+          - action: "submit_safety_report"
+            data:
+              incident_type: "near_miss"
+              location: "site_a"
+              timestamp: "now"
+            validation:
+              - "required_fields_present"
+              - "proper_classification"
+              - "timely_submission"
+
+      - name: "permit_validation"
+        steps:
+          - action: "upload_permit"
+            data:
+              type: "building_permit"
+              authority: "local_gov"
+              expiry: "future_date"
+            validation:
+              - "digital_signature_valid"
+              - "authority_recognized"
+              - "not_expired"
+
+  encryption-tests.yaml: |
+    scenarios:
+      - name: "backup_encryption_validation"
+        steps:
+          - action: "create_backup"
+            data:
+              type: "full_backup"
+              encryption: "aes256"
+            validation:
+              - "encryption_applied"
+              - "key_secure"
+              - "recoverable"
+
+      - name: "document_transmission_security"
+        steps:
+          - action: "transmit_document"
+            data:
+              type: "blueprint"
+              destination: "external_vendor"
+            validation:
+              - "tls_enforced"
+              - "data_encrypted"
+              - "audit_logged"
+
+  penetration-test-scenarios.yaml: |
+    scenarios:
+      - name: "authentication_bypass_attempt"
+        steps:
+          - action: "attempt_login"
+            variations:
+              - "sql_injection"
+              - "session_hijacking"
+              - "token_manipulation"
+            validation:
+              - "attempts_blocked"
+              - "alerts_generated"
+
+      - name: "privilege_escalation_test"
+        steps:
+          - action: "escalate_privileges"
+            variations:
+              - "role_manipulation"
+              - "parameter_tampering"
+              - "token_modification"
+            validation:
+              - "escalation_prevented"
+              - "incident_logged"
+
+  disaster-recovery-tests.yaml: |
+    scenarios:
+      - name: "data_recovery_validation"
+        steps:
+          - action: "simulate_data_loss"
+            scope: "critical_documents"
+            validation:
+              - "backup_available"
+              - "recovery_time_within_sla"
+              - "data_integrity_maintained"
+
+      - name: "system_compromise_recovery"
+        steps:
+          - action: "simulate_breach"
+            scope: "document_system"
+            validation:
+              - "containment_effective"
+              - "system_restored"
+              - "no_data_loss"

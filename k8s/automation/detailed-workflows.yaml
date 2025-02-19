@@ -1,0 +1,94 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: detailed-workflows
+  namespace: automation
+data:
+  proses_waterproofing.yaml: |
+    workflow:
+      aplikasi:
+        tahapan:
+          - fase: "persiapan"
+            checklist:
+              - "pembersihan_permukaan"
+              - "repair_crack"
+              - "moisture_test"
+            verifikasi:
+              - "supervisor"
+              - "technical_advisor"
+          - fase: "instalasi"
+            checklist:
+              - "primer_application"
+              - "membrane_laying"
+              - "overlap_checking"
+            dokumentasi:
+              - "foto_setiap_layer"
+              - "test_report"
+              - "garansi_aplikator"
+
+  proses_testing_commissioning.yaml: |
+    workflow:
+      pengujian_sistem:
+        sequence:
+          - sistem: "hvac"
+            tahap:
+              - nama: "pre_test"
+                checklist:
+                  - "cleaning_ducting"
+                  - "balancing_preparation"
+                  - "sensor_calibration"
+              - nama: "testing"
+                parameter:
+                  - "air_flow"
+                  - "temperature"
+                  - "humidity"
+              - nama: "commissioning"
+                verifikasi:
+                  - "performance_test"
+                  - "control_system"
+                  - "energy_efficiency"
+
+  proses_facade_installation.yaml: |
+    workflow:
+      pemasangan:
+        sequence:
+          - tahap: "setting_out"
+            aktivitas:
+              - "survey_datum"
+              - "bracket_marking"
+              - "alignment_check"
+            verifikasi:
+              - "surveyor"
+              - "facade_engineer"
+          - tahap: "instalasi"
+            aktivitas:
+              - "bracket_installation"
+              - "mullion_installation"
+              - "panel_setting"
+            testing:
+              - "hose_test"
+              - "field_test"
+              - "visual_inspection"
+
+  proses_final_inspection.yaml: |
+    workflow:
+      inspeksi_akhir:
+        area:
+          - kategori: "arsitektur"
+            checklist:
+              - "finishing_quality"
+              - "completeness"
+              - "aesthetics"
+            dokumentasi:
+              - "punch_list"
+              - "foto_kondisi"
+              - "approval_sheet"
+          - kategori: "mep"
+            checklist:
+              - "system_performance"
+              - "labeling"
+              - "as_built_drawing"
+            testing:
+              - "functional_test"
+              - "integration_test"
+              - "documentation_review"

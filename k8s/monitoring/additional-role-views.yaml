@@ -1,0 +1,184 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: additional-role-views
+  namespace: monitoring
+data:
+  procurement_manager.json: |
+    {
+      "title": "Procurement Dashboard",
+      "refresh": "5m",
+      "panels": [
+        {
+          "title": "Material Status",
+          "type": "inventory-grid",
+          "metrics": [
+            "stock_levels",
+            "pending_orders",
+            "delivery_schedule"
+          ],
+          "alerts": {
+            "low_stock": "threshold < 20%",
+            "delayed_delivery": "delay > 2d"
+          }
+        },
+        {
+          "title": "Supplier Performance",
+          "type": "rating-chart",
+          "metrics": [
+            "delivery_reliability",
+            "material_quality",
+            "price_variance"
+          ]
+        },
+        {
+          "title": "Cost Analysis",
+          "type": "trend-chart",
+          "metrics": [
+            "price_trends",
+            "budget_variance",
+            "savings_achieved"
+          ]
+        }
+      ]
+    }
+
+  logistics_coordinator.json: |
+    {
+      "title": "Logistics Dashboard",
+      "refresh": "2m",
+      "panels": [
+        {
+          "title": "Site Deliveries",
+          "type": "schedule-board",
+          "metrics": [
+            "upcoming_deliveries",
+            "unloading_queue",
+            "storage_capacity"
+          ]
+        },
+        {
+          "title": "Equipment Movement",
+          "type": "location-tracker",
+          "metrics": [
+            "equipment_location",
+            "utilization_rate",
+            "maintenance_status"
+          ]
+        },
+        {
+          "title": "Storage Areas",
+          "type": "capacity-chart",
+          "metrics": [
+            "area_utilization",
+            "material_organization",
+            "access_routes"
+          ]
+        }
+      ]
+    }
+
+  cost_controller.json: |
+    {
+      "title": "Cost Control Dashboard",
+      "refresh": "15m",
+      "panels": [
+        {
+          "title": "Budget Performance",
+          "type": "variance-analysis",
+          "metrics": [
+            "cost_variance",
+            "earned_value",
+            "forecast_completion"
+          ]
+        },
+        {
+          "title": "Resource Costs",
+          "type": "cost-breakdown",
+          "metrics": [
+            "labor_costs",
+            "material_costs",
+            "equipment_costs"
+          ]
+        },
+        {
+          "title": "Change Orders",
+          "type": "financial-impact",
+          "metrics": [
+            "approved_changes",
+            "pending_claims",
+            "cost_impact"
+          ]
+        }
+      ]
+    }
+
+  planning_engineer.json: |
+    {
+      "title": "Planning Dashboard",
+      "refresh": "10m",
+      "panels": [
+        {
+          "title": "Schedule Analysis",
+          "type": "gantt-chart",
+          "metrics": [
+            "critical_path",
+            "float_analysis",
+            "milestone_tracking"
+          ]
+        },
+        {
+          "title": "Resource Loading",
+          "type": "resource-histogram",
+          "metrics": [
+            "labor_loading",
+            "equipment_allocation",
+            "material_requirements"
+          ]
+        },
+        {
+          "title": "Progress Tracking",
+          "type": "s-curve",
+          "metrics": [
+            "planned_progress",
+            "actual_progress",
+            "recovery_plan"
+          ]
+        }
+      ]
+    }
+
+  subcontractor_manager.json: |
+    {
+      "title": "Subcontractor Management",
+      "refresh": "5m",
+      "panels": [
+        {
+          "title": "Performance Metrics",
+          "type": "scorecard",
+          "metrics": [
+            "quality_rating",
+            "safety_compliance",
+            "schedule_adherence"
+          ]
+        },
+        {
+          "title": "Resource Tracking",
+          "type": "resource-matrix",
+          "metrics": [
+            "workforce_present",
+            "equipment_deployed",
+            "material_usage"
+          ]
+        },
+        {
+          "title": "Payment Status",
+          "type": "financial-summary",
+          "metrics": [
+            "work_completed",
+            "payment_status",
+            "retention_amount"
+          ]
+        }
+      ]
+    }

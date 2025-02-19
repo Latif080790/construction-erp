@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: process-specific-workflows
+  namespace: automation
+data:
+  proses_pengecoran.yaml: |
+    workflow:
+      persiapan:
+        checklist:
+          - tahap: "pre_pour"
+            item:
+              - "pembersihan_area"
+              - "pemasangan_bekisting"
+              - "pengecekan_tulangan"
+            verifikasi:
+              - "supervisor"
+              - "quality_control"
+          - tahap: "ready_mix"
+            item:
+              - "mix_design"
+              - "slump_test"
+              - "suhu_beton"
+            dokumentasi:
+              otomatis:
+                - "foto_digital"
+                - "hasil_pengujian"
+                - "approval_status"
+
+  proses_commissioning.yaml: |
+    workflow:
+      pengujian:
+        sequence:
+          - sistem: "mekanikal"
+            tahap:
+              - "pre_test"
+              - "individual_test"
+              - "integrated_test"
+            parameter:
+              - "tekanan"
+              - "flow_rate"
+              - "temperatur"
+          - sistem: "elektrikal"
+            tahap:
+              - "megger_test"
+              - "grounding_test"
+              - "load_test"
+            parameter:
+              - "isolasi"
+              - "continuity"
+              - "voltage_drop"
+
+  proses_handover.yaml: |
+    workflow:
+      serah_terima:
+        dokumen:
+          - kategori: "teknis"
+            item:
+              - "as_built_drawing"
+              - "manual_operasi"
+              - "hasil_pengujian"
+            format:
+              - "hardcopy"
+              - "digital_copy"
+              - "cloud_storage"
+          - kategori: "legal"
+            item:
+              - "sertifikat_layak"
+              - "garansi"
+              - "compliance_doc"
+            validasi:
+              - "legal_team"
+              - "owner_rep"
+              - "konsultan"
+
+  proses_pemeliharaan.yaml: |
+    workflow:
+      maintenance:
+        jadwal:
+          - tipe: "preventive"
+            interval:
+              - "harian"
+              - "mingguan"
+              - "bulanan"
+            item:
+              - "inspeksi_visual"
+              - "pembersihan"
+              - "pelumasan"
+          - tipe: "prediktif"
+            monitoring:
+              - "vibrasi"
+              - "temperatur"
+              - "noise_level"
+            analisis:
+              otomatis:
+                - "trend_analysis"
+                - "failure_prediction"
+                - "maintenance_planning"

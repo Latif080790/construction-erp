@@ -1,0 +1,184 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: specialized-role-views
+  namespace: monitoring
+data:
+  structural_engineer.json: |
+    {
+      "title": "Structural Engineering Dashboard",
+      "refresh": "1m",
+      "panels": [
+        {
+          "title": "Structural Analysis",
+          "type": "real_time_analysis",
+          "metrics": [
+            "load_distribution",
+            "stress_patterns",
+            "deflection_monitoring"
+          ],
+          "alerts": {
+            "critical_stress": "> design_limit",
+            "excessive_deflection": "> allowable_limit"
+          }
+        },
+        {
+          "title": "Material Performance",
+          "type": "strength_monitoring",
+          "metrics": [
+            "concrete_strength",
+            "steel_stress",
+            "connection_integrity"
+          ]
+        },
+        {
+          "title": "Construction Sequence",
+          "type": "sequence_tracker",
+          "metrics": [
+            "current_stage",
+            "load_transfer",
+            "temporary_support"
+          ]
+        }
+      ]
+    }
+
+  mep_coordinator.json: |
+    {
+      "title": "MEP Coordination Dashboard",
+      "refresh": "2m",
+      "panels": [
+        {
+          "title": "System Integration",
+          "type": "clash_detection",
+          "metrics": [
+            "spatial_conflicts",
+            "service_routes",
+            "access_zones"
+          ]
+        },
+        {
+          "title": "Performance Monitoring",
+          "type": "system_metrics",
+          "metrics": [
+            "hvac_efficiency",
+            "electrical_load",
+            "plumbing_pressure"
+          ]
+        },
+        {
+          "title": "Testing Progress",
+          "type": "test_tracker",
+          "metrics": [
+            "pressure_tests",
+            "electrical_tests",
+            "system_balancing"
+          ]
+        }
+      ]
+    }
+
+  quality_inspector.json: |
+    {
+      "title": "Quality Inspection Dashboard",
+      "refresh": "5m",
+      "panels": [
+        {
+          "title": "Inspection Tasks",
+          "type": "task_board",
+          "metrics": [
+            "pending_inspections",
+            "completed_checks",
+            "identified_issues"
+          ]
+        },
+        {
+          "title": "Quality Metrics",
+          "type": "quality_tracker",
+          "metrics": [
+            "surface_finish",
+            "alignment_accuracy",
+            "installation_quality"
+          ]
+        },
+        {
+          "title": "Documentation",
+          "type": "document_status",
+          "metrics": [
+            "inspection_reports",
+            "test_certificates",
+            "compliance_records"
+          ]
+        }
+      ]
+    }
+
+  sustainability_manager.json: |
+    {
+      "title": "Sustainability Dashboard",
+      "refresh": "15m",
+      "panels": [
+        {
+          "title": "Energy Performance",
+          "type": "energy_metrics",
+          "metrics": [
+            "energy_consumption",
+            "renewable_usage",
+            "efficiency_rating"
+          ]
+        },
+        {
+          "title": "Material Usage",
+          "type": "material_tracking",
+          "metrics": [
+            "recycled_content",
+            "waste_reduction",
+            "sustainable_sourcing"
+          ]
+        },
+        {
+          "title": "Environmental Impact",
+          "type": "impact_assessment",
+          "metrics": [
+            "carbon_footprint",
+            "water_usage",
+            "ecosystem_impact"
+          ]
+        }
+      ]
+    }
+
+  commissioning_manager.json: |
+    {
+      "title": "Commissioning Dashboard",
+      "refresh": "1m",
+      "panels": [
+        {
+          "title": "System Status",
+          "type": "system_health",
+          "metrics": [
+            "operational_status",
+            "performance_metrics",
+            "integration_status"
+          ]
+        },
+        {
+          "title": "Testing Progress",
+          "type": "test_progress",
+          "metrics": [
+            "functional_tests",
+            "performance_tests",
+            "user_acceptance"
+          ]
+        },
+        {
+          "title": "Documentation",
+          "type": "document_tracker",
+          "metrics": [
+            "manuals_status",
+            "training_materials",
+            "handover_documents"
+          ]
+        }
+      ]
+    }

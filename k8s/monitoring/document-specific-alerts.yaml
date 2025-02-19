@@ -1,0 +1,116 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: document-specific-alerts
+  namespace: monitoring
+spec:
+  groups:
+    - name: structural_documents
+      rules:
+        - alert: StructuralCalculationModification
+          expr: structural_calc_modifications{approval_status!="approved"} > 0
+          for: 1m
+          labels:
+            severity: critical
+            category: structural
+          annotations:
+            summary: "Unauthorized structural calculation modification"
+            description: "Calculations modified without engineer approval: {{ $labels.document_id }}"
+
+        - alert: LoadBearingChangeDetected
+          expr: load_bearing_changes > 0
+          for: 1m
+          labels:
+            severity: critical
+            category: structural
+          annotations:
+            summary: "Critical load-bearing modification detected"
+            description: "Load-bearing element modified: {{ $labels.element_id }}"
+
+    - name: architectural_documents
+      rules:
+        - alert: DesignChangeWithoutApproval
+          expr: design_modifications{approval_status!="approved"} > 0
+          for: 5m
+          labels:
+            severity: high
+            category: architectural
+          annotations:
+            summary: "Unapproved design change detected"
+            description: "Design element modified: {{ $labels.element_id }}"
+
+        - alert: FireEgressModification
+          expr: fire_egress_changes > 0
+          for: 1m
+          labels:
+            severity: critical
+            category: safety
+          annotations:
+            summary: "Fire egress path modification detected"
+            description: "Egress path changed: {{ $labels.path_id }}"
+
+    - name: permit_documents
+      rules:
+        - alert: PermitConditionViolation
+          expr: permit_condition_compliance < 1
+          for: 5m
+          labels:
+            severity: high
+            category: compliance
+          annotations:
+            summary: "Permit condition violation detected"
+            description: "Non-compliant conditions: {{ $labels.condition_ids }}"
+
+        - alert: PermitDrawingMismatch
+          expr: permit_drawing_consistency == 0
+          for: 5m
+          labels:
+            severity: critical
+            category: compliance
+          annotations:
+            summary: "Permit drawings inconsistency detected"
+            description: "Mismatch in permit drawings: {{ $labels.drawing_ids }}"
+
+    - name: safety_documents
+      rules:
+        - alert: SafetyProcedureModification
+          expr: safety_procedure_changes{approval_status!="approved"} > 0
+          for: 1m
+          labels:
+            severity: critical
+            category: safety
+          annotations:
+            summary: "Unauthorized safety procedure modification"
+            description: "Safety procedure modified: {{ $labels.procedure_id }}"
+
+        - alert: HazardousAreaDocumentationIncomplete
+          expr: hazardous_area_documentation < 1
+          for: 5m
+          labels:
+            severity: high
+            category: safety
+          annotations:
+            summary: "Incomplete hazardous area documentation"
+            description: "Missing documentation for area: {{ $labels.area_id }}"
+
+    - name: quality_control_documents
+      rules:
+        - alert: QualityControlPlanDeviation
+          expr: qc_plan_adherence < 0.95
+          for: 15m
+          labels:
+            severity: high
+            category: quality
+          annotations:
+            summary: "Quality control plan deviation detected"
+            description: "QC plan adherence at {{ $value }}%"
+
+        - alert: MaterialTestingDocumentationGap
+          expr: material_testing_documentation < 1
+          for: 1h
+          labels:
+            severity: warning
+            category: quality
+          annotations:
+            summary: "Material testing documentation incomplete"
+            description: "Missing tests for material: {{ $labels.material_id }}"

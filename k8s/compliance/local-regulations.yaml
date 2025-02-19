@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: local-regulations
+  namespace: compliance
+data:
+  zoning-requirements.yaml: |
+    checks:
+      - regulation: "setback_requirements"
+        parameters:
+          - zone_type: ["residential", "commercial", "industrial"]
+          - building_height
+          - lot_size
+        validation:
+          - "front_setback >= ${min_front_setback}"
+          - "side_setback >= ${min_side_setback}"
+          - "rear_setback >= ${min_rear_setback}"
+
+      - regulation: "height_restrictions"
+        parameters:
+          - zone_type
+          - proximity_to_airport
+          - historic_district
+        validation:
+          - "building_height <= ${max_height}"
+          - "story_count <= ${max_stories}"
+
+  noise-ordinance.yaml: |
+    checks:
+      - regulation: "construction_hours"
+        parameters:
+          - day_type: ["weekday", "weekend", "holiday"]
+          - zone_type
+          - project_type
+        validation:
+          - "start_time >= ${allowed_start}"
+          - "end_time <= ${allowed_end}"
+          - "noise_level <= ${max_decibels}"
+
+      - regulation: "equipment_noise"
+        parameters:
+          - equipment_type
+          - duration
+          - distance_to_residential
+        validation:
+          - "peak_noise <= ${max_peak_noise}"
+          - "average_noise <= ${max_avg_noise}"
+
+  environmental-protection.yaml: |
+    checks:
+      - regulation: "tree_preservation"
+        parameters:
+          - tree_diameter
+          - species
+          - health_condition
+        validation:
+          - "preservation_plan_submitted"
+          - "replacement_ratio >= ${min_ratio}"
+          - "protection_measures_documented"
+
+      - regulation: "wetland_protection"
+        parameters:
+          - wetland_type
+          - impact_area
+          - mitigation_plan
+        validation:
+          - "buffer_zone >= ${required_buffer}"
+          - "mitigation_ratio >= ${required_ratio}"
+
+  historic-preservation.yaml: |
+    checks:
+      - regulation: "facade_preservation"
+        parameters:
+          - building_age
+          - historic_designation
+          - modification_type
+        validation:
+          - "original_features_preserved"
+          - "materials_matched"
+          - "review_board_approved"
+
+      - regulation: "archaeological_review"
+        parameters:
+          - site_location
+          - excavation_depth
+          - historical_significance
+        validation:
+          - "survey_completed"
+          - "artifacts_documented"
+          - "preservation_plan_approved"

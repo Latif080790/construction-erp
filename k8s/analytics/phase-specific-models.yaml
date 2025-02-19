@@ -1,0 +1,155 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: phase-specific-models
+  namespace: analytics
+data:
+  foundation-phase.yaml: |
+    models:
+      soil_behavior:
+        type: "gaussian_process"
+        features:
+          - soil_composition
+          - moisture_content
+          - compaction_level
+          - weather_conditions
+          - groundwater_level
+        predictions:
+          - settlement_prediction
+          - bearing_capacity
+          - differential_movement
+        confidence_level: 0.95
+
+      concrete_curing:
+        type: "neural_network"
+        features:
+          - concrete_mix
+          - ambient_temperature
+          - humidity
+          - wind_speed
+          - pour_volume
+        predictions:
+          - strength_development
+          - curing_time
+          - potential_defects
+        update_frequency: "hourly"
+
+  structural-phase.yaml: |
+    models:
+      steel_erection:
+        type: "physics_based_ml"
+        features:
+          - member_specifications
+          - connection_details
+          - wind_loads
+          - temperature_effects
+          - sequence_optimization
+        predictions:
+          - stability_analysis
+          - deflection_patterns
+          - stress_distribution
+        simulation_frequency: "real_time"
+
+      concrete_performance:
+        type: "ensemble_hybrid"
+        features:
+          - mix_design
+          - reinforcement_details
+          - loading_conditions
+          - environmental_factors
+          - construction_method
+        predictions:
+          - strength_verification
+          - crack_prediction
+          - durability_assessment
+        confidence_threshold: 0.90
+
+  mep-phase.yaml: |
+    models:
+      system_coordination:
+        type: "conflict_detection"
+        features:
+          - spatial_data
+          - service_requirements
+          - equipment_specifications
+          - access_requirements
+          - maintenance_zones
+        predictions:
+          - clash_detection
+          - optimization_suggestions
+          - installation_sequence
+        update_frequency: "daily"
+
+      performance_optimization:
+        type: "multi_objective"
+        features:
+          - energy_consumption
+          - system_efficiency
+          - maintenance_needs
+          - operational_costs
+          - comfort_parameters
+        predictions:
+          - efficiency_optimization
+          - maintenance_scheduling
+          - system_balancing
+        optimization_period: "weekly"
+
+  finishing-phase.yaml: |
+    models:
+      quality_prediction:
+        type: "computer_vision"
+        features:
+          - surface_images
+          - material_properties
+          - application_methods
+          - environmental_conditions
+          - worker_experience
+        predictions:
+          - defect_detection
+          - finish_quality
+          - rework_probability
+        accuracy_threshold: 0.95
+
+      environmental_control:
+        type: "adaptive_control"
+        features:
+          - temperature
+          - humidity
+          - ventilation
+          - dust_levels
+          - material_requirements
+        predictions:
+          - optimal_conditions
+          - curing_parameters
+          - protection_measures
+        control_frequency: "continuous"
+
+  commissioning-phase.yaml: |
+    models:
+      system_integration:
+        type: "system_dynamics"
+        features:
+          - component_performance
+          - interaction_patterns
+          - load_profiles
+          - control_responses
+          - user_behavior
+        predictions:
+          - system_efficiency
+          - integration_issues
+          - optimization_opportunities
+        analysis_period: "24h"
+
+      performance_verification:
+        type: "bayesian_network"
+        features:
+          - test_results
+          - operational_data
+          - design_specifications
+          - environmental_impact
+          - energy_efficiency
+        predictions:
+          - compliance_verification
+          - performance_gaps
+          - remediation_needs
+        confidence_level: 0.98

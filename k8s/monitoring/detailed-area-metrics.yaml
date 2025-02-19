@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: detailed-area-metrics
+  namespace: monitoring
+data:
+  pekerjaan_basement.yaml: |
+    metrik:
+      dewatering:
+        parameter:
+          - nama: "muka_air_tanah"
+            pengukuran:
+              metode: "piezometer"
+              interval: "per_jam"
+              batas:
+                maksimum: "level_excavasi - 0.5m"
+          - nama: "laju_pemompaan"
+            pengukuran:
+              metode: "flow_meter"
+              interval: "real_time"
+              batas:
+                optimal: "sesuai_desain"
+        monitoring:
+          settlement:
+            - "bangunan_sekitar"
+            - "struktur_penahan"
+            - "dasar_galian"
+
+  pekerjaan_facade.yaml: |
+    metrik:
+      pemasangan_curtainwall:
+        parameter:
+          - nama: "vertikalitas"
+            pengukuran:
+              metode: "laser_scanning"
+              interval: "per_panel"
+              toleransi: "±3mm"
+          - nama: "weather_seal"
+            pengukuran:
+              metode: "water_test"
+              interval: "per_section"
+              standar: "ASTM_E1105"
+        kualitas:
+          inspeksi:
+            - "gasket_condition"
+            - "silicon_joint"
+            - "panel_alignment"
+
+  sistem_plumbing.yaml: |
+    metrik:
+      instalasi_pipa:
+        parameter:
+          - nama: "tekanan_air"
+            pengukuran:
+              metode: "pressure_gauge"
+              interval: "kontinyu"
+              batas:
+                normal: "3-4 bar"
+          - nama: "kualitas_air"
+            pengukuran:
+              metode: "water_quality_sensor"
+              parameter:
+                - "pH"
+                - "kekeruhan"
+                - "sisa_klor"
+        testing:
+          hydrostatic:
+            - "tekanan_uji: 1.5x working_pressure"
+            - "durasi: 24_jam"
+            - "drop_maksimum: 0.5_bar"
+
+  fire_protection.yaml: |
+    metrik:
+      sistem_sprinkler:
+        parameter:
+          - nama: "tekanan_sistem"
+            pengukuran:
+              metode: "digital_pressure_sensor"
+              interval: "real_time"
+              batas:
+                minimum: "sesuai_NFPA"
+          - nama: "flow_rate"
+            pengukuran:
+              metode: "flow_sensor"
+              interval: "per_zone"
+              standar: "NFPA_13"
+        pemeliharaan:
+          rutin:
+            - "inspeksi_visual: mingguan"
+            - "flow_test: 3_bulanan"
+            - "main_drain_test: tahunan"

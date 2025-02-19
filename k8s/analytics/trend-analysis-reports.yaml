@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trend-analysis-reports
+  namespace: analytics
+data:
+  performance-trends.yaml: |
+    reports:
+      - name: "productivity_analysis"
+        frequency: "weekly"
+        metrics:
+          - name: "labor_productivity"
+            analysis:
+              - type: "trend_line"
+                period: "12w"
+                comparison: "industry_benchmark"
+              - type: "variance_analysis"
+                threshold: "±10%"
+          - name: "equipment_efficiency"
+            analysis:
+              - type: "utilization_curve"
+                period: "4w"
+                baseline: "optimal_usage"
+        visualizations:
+          - type: "time_series"
+            metrics: ["productivity_index", "efficiency_ratio"]
+          - type: "heat_map"
+            metrics: ["productivity_hotspots", "bottlenecks"]
+
+      - name: "quality_metrics_trend"
+        frequency: "daily"
+        metrics:
+          - name: "defect_rate"
+            analysis:
+              - type: "moving_average"
+                window: "30d"
+                alerts: "increasing_trend"
+              - type: "pattern_recognition"
+                focus: "recurring_issues"
+          - name: "rework_cost"
+            analysis:
+              - type: "cumulative_sum"
+                threshold: "budget_allocation"
+        visualizations:
+          - type: "control_chart"
+            metrics: ["defect_rate", "quality_index"]
+          - type: "pareto_chart"
+            metrics: ["defect_categories", "cost_impact"]
+
+  safety-compliance-trends.yaml: |
+    reports:
+      - name: "safety_performance"
+        frequency: "daily"
+        metrics:
+          - name: "incident_rate"
+            analysis:
+              - type: "frequency_analysis"
+                period: "90d"
+                comparison: "industry_average"
+              - type: "severity_tracking"
+                categories: ["near_miss", "minor", "major"]
+          - name: "safety_compliance"
+            analysis:
+              - type: "compliance_score"
+                components: ["ppe", "procedures", "training"]
+        visualizations:
+          - type: "trend_dashboard"
+            metrics: ["incident_frequency", "severity_distribution"]
+          - type: "compliance_matrix"
+            metrics: ["compliance_scores", "violation_patterns"]
+
+  resource-utilization-trends.yaml: |
+    reports:
+      - name: "resource_efficiency"
+        frequency: "weekly"
+        metrics:
+          - name: "material_usage"
+            analysis:
+              - type: "consumption_pattern"
+                period: "8w"
+                comparison: "planned_usage"
+              - type: "waste_analysis"
+                categories: ["excess", "damage", "loss"]
+          - name: "equipment_utilization"
+            analysis:
+              - type: "usage_pattern"
+                period: "4w"
+                metrics: ["runtime", "downtime", "idle_time"]
+        visualizations:
+          - type: "efficiency_dashboard"
+            metrics: ["usage_ratio", "waste_percentage"]
+          - type: "utilization_chart"
+            metrics: ["equipment_efficiency", "maintenance_impact"]
+
+  financial-performance-trends.yaml: |
+    reports:
+      - name: "cost_analysis"
+        frequency: "weekly"
+        metrics:
+          - name: "cost_variance"
+            analysis:
+              - type: "trend_analysis"
+                period: "12w"
+                comparison: "budget_baseline"
+              - type: "forecast_model"
+                horizon: "end_of_project"
+          - name: "earned_value"
+            analysis:
+              - type: "performance_index"
+                metrics: ["CPI", "SPI"]
+        visualizations:
+          - type: "s_curve"
+            metrics: ["planned_value", "earned_value", "actual_cost"]
+          - type: "variance_chart"
+            metrics: ["cost_variance", "schedule_variance"]

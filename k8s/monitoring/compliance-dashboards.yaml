@@ -1,0 +1,159 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: compliance-dashboards
+  namespace: monitoring
+data:
+  structural-monitoring.json: |
+    {
+      "title": "Structural Compliance Dashboard",
+      "refresh": "30s",
+      "panels": [
+        {
+          "title": "Structural Integrity Status",
+          "type": "status-grid",
+          "metrics": [
+            "load_bearing_compliance",
+            "foundation_stability",
+            "structural_calculations"
+          ],
+          "alerts": {
+            "threshold": 98,
+            "severity": "critical"
+          }
+        },
+        {
+          "title": "Engineering Approvals",
+          "type": "timeline",
+          "metrics": [
+            "pending_approvals",
+            "approved_changes",
+            "rejected_modifications"
+          ],
+          "timeRange": "24h"
+        }
+      ]
+    }
+
+  safety-monitoring.json: |
+    {
+      "title": "Safety Compliance Dashboard",
+      "refresh": "1m",
+      "panels": [
+        {
+          "title": "Active Safety Conditions",
+          "type": "alert-panel",
+          "metrics": [
+            "hazard_levels",
+            "safety_violations",
+            "incident_reports"
+          ],
+          "severity_mapping": {
+            "critical": "red",
+            "warning": "yellow",
+            "normal": "green"
+          }
+        },
+        {
+          "title": "Safety Equipment Status",
+          "type": "health-grid",
+          "metrics": [
+            "ppe_compliance",
+            "equipment_certification",
+            "safety_system_status"
+          ]
+        }
+      ]
+    }
+
+  quality-monitoring.json: |
+    {
+      "title": "Quality Control Dashboard",
+      "refresh": "5m",
+      "panels": [
+        {
+          "title": "Material Quality Metrics",
+          "type": "gauge-grid",
+          "metrics": [
+            "material_test_results",
+            "quality_inspections",
+            "defect_rates"
+          ],
+          "thresholds": {
+            "warning": 95,
+            "critical": 90
+          }
+        },
+        {
+          "title": "Quality Control Progress",
+          "type": "progress-tracker",
+          "metrics": [
+            "inspection_completion",
+            "test_coverage",
+            "quality_documentation"
+          ]
+        }
+      ]
+    }
+
+  environmental-monitoring.json: |
+    {
+      "title": "Environmental Compliance Dashboard",
+      "refresh": "5m",
+      "panels": [
+        {
+          "title": "Environmental Metrics",
+          "type": "real-time-graph",
+          "metrics": [
+            "dust_levels",
+            "noise_levels",
+            "water_quality"
+          ],
+          "alerts": {
+            "dust": "150μg/m3",
+            "noise": "85dB"
+          }
+        },
+        {
+          "title": "Waste Management",
+          "type": "pie-chart",
+          "metrics": [
+            "waste_segregation",
+            "recycling_rate",
+            "hazardous_waste"
+          ]
+        }
+      ]
+    }
+
+  permit-monitoring.json: |
+    {
+      "title": "Permit Compliance Dashboard",
+      "refresh": "1h",
+      "panels": [
+        {
+          "title": "Permit Status Overview",
+          "type": "status-board",
+          "metrics": [
+            "active_permits",
+            "pending_renewals",
+            "permit_violations"
+          ],
+          "filters": [
+            "permit_type",
+            "location",
+            "status"
+          ]
+        },
+        {
+          "title": "Inspection Schedule",
+          "type": "calendar",
+          "metrics": [
+            "scheduled_inspections",
+            "completed_inspections",
+            "failed_inspections"
+          ],
+          "timeRange": "30d"
+        }
+      ]
+    }

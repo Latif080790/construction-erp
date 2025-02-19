@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: compliance-rules
+  namespace: erp
+data:
+  osha-rules.yaml: |
+    rules:
+      - name: safety_incident_reporting
+        description: "Monitor safety incident reporting compliance"
+        conditions:
+          - metric: "time_to_report_incident"
+            operator: "<="
+            value: "8h"  # OSHA 8-hour reporting requirement
+          - metric: "incident_report_completeness"
+            operator: ">="
+            value: "0.95"  # 95% completeness required
+
+      - name: hazard_communication
+        description: "Monitor hazardous material documentation"
+        conditions:
+          - metric: "sds_availability"
+            operator: "=="
+            value: "1.0"  # All Safety Data Sheets must be available
+          - metric: "chemical_inventory_update"
+            operator: "<="
+            value: "30d"  # Monthly inventory updates required
+
+  environmental-rules.yaml: |
+    rules:
+      - name: waste_management
+        description: "Monitor construction waste management"
+        conditions:
+          - metric: "waste_segregation_compliance"
+            operator: ">="
+            value: "0.9"  # 90% proper waste segregation
+          - metric: "recycling_rate"
+            operator: ">="
+            value: "0.75"  # 75% minimum recycling rate
+
+      - name: emissions_monitoring
+        description: "Monitor construction site emissions"
+        conditions:
+          - metric: "dust_particulate_level"
+            operator: "<="
+            value: "150"  # µg/m³ maximum
+          - metric: "noise_level"
+            operator: "<="
+            value: "85"  # dB maximum
+
+  quality-rules.yaml: |
+    rules:
+      - name: material_quality
+        description: "Monitor construction material quality"
+        conditions:
+          - metric: "material_certification_valid"
+            operator: "=="
+            value: "1.0"  # All materials must be certified
+          - metric: "material_testing_frequency"
+            operator: ">="
+            value: "0.95"  # 95% testing compliance
+
+      - name: workmanship_quality
+        description: "Monitor construction workmanship"
+        conditions:
+          - metric: "inspection_coverage"
+            operator: ">="
+            value: "1.0"  # 100% inspection coverage
+          - metric: "defect_rate"
+            operator: "<="
+            value: "0.02"  # Maximum 2% defect rate
+
+  labor-rules.yaml: |
+    rules:
+      - name: worker_certification
+        description: "Monitor worker certifications"
+        conditions:
+          - metric: "certification_validity"
+            operator: "=="
+            value: "1.0"  # All certifications must be valid
+          - metric: "training_compliance"
+            operator: ">="
+            value: "0.95"  # 95% training compliance
+
+      - name: working_hours
+        description: "Monitor working hours compliance"
+        conditions:
+          - metric: "max_daily_hours"
+            operator: "<="
+            value: "12"  # Maximum 12 hours per day
+          - metric: "rest_period_compliance"
+            operator: ">="
+            value: "1.0"  # 100% rest period compliance

@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backup-encryption-key
+  namespace: backup
+type: Opaque
+data:
+  key: ${BACKUP_ENCRYPTION_KEY}
+---
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  name: construction-backup-location
+  namespace: backup
+spec:
+  provider: aws
+  objectStorage:
+    bucket: construction-erp-backups
+    prefix: encrypted
+  config:
+    region: ${AWS_REGION}
+    encryption:
+      enabled: true
+      keyId: ${KMS_KEY_ID}
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: backup-encryption-rotation
+  namespace: backup
+spec:
+  schedule: "0 0 1 * *"  # Monthly key rotation
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: key-rotation
+            image: backup-tools:latest
+            command:
+            - /scripts/rotate-encryption-keys.sh
+            env:
+            - name: KEY_ROTATION_PERIOD
+              value: "30d"
+            - name: MIN_KEY_SIZE
+              value: "256"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backup-encryption-config
+  namespace: backup
+data:
+  backup-types.yaml: |
+    - name: blueprints
+      schedule: "0 */4 * * *"  # Every 4 hours
+      retention: "90d"
+      encryption:
+        algorithm: "AES-256-GCM"
+        key_rotation: true
+
+    - name: contracts
+      schedule: "0 */2 * * *"  # Every 2 hours
+      retention: "365d"
+      encryption:
+        algorithm: "AES-256-GCM"
+        key_rotation: true
+
+    - name: safety_records
+      schedule: "0 */1 * * *"  # Every hour
+      retention: "730d"
+      encryption:
+        algorithm: "AES-256-GCM"
+        key_rotation: true
+
+    - name: financial_data
+      schedule: "*/30 * * * *"  # Every 30 minutes
+      retention: "1825d"
+      encryption:
+        algorithm: "AES-256-GCM"
+        key_rotation: true

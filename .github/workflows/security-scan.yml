@@ -1,0 +1,84 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'table'
+        exit-code: '1'
+        ignore-unfixed: true
+        severity: 'CRITICAL,HIGH'
+
+    - name: Run Bandit (Python security scanner)
+      run: |
+        cd backend
+        pip install bandit
+        bandit -r . -ll -ii -f json -o bandit-results.json
+
+    - name: Run npm audit
+      run: |
+        cd frontend
+        npm audit --json > npm-audit.json
+
+    - name: Run OWASP Dependency-Check
+      uses: dependency-check/Dependency-Check_Action@main
+      with:
+        project: 'erp'
+        path: '.'
+        format: 'HTML'
+        args: >
+          --suppression suppression.xml
+          --failOnCVSS 7
+          --enableRetired
+
+    - name: Run SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    - name: Run Container Scan
+      uses: azure/container-scan@v0
+      with:
+        image-name: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+
+    - name: Check for sensitive data
+      uses: zricethezav/gitleaks-action@master
+
+    - name: Upload security scan results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: security-scan-results
+        path: |
+          backend/bandit-results.json
+          frontend/npm-audit.json
+          reports/dependency-check-report.html
+
+    - name: Notify on security issues
+      if: failure()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const issue = {
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: 'Security Scan Failed',
+            body: 'Security vulnerabilities were found. Please check the scan results.'
+          }
+          await github.rest.issues.create(issue)

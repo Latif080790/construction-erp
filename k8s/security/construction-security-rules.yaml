@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: construction-security-rules
+  namespace: security
+data:
+  construction-rules.yaml: |
+    - rule: Sensitive Blueprint Access
+      desc: Detect unauthorized access to blueprint files
+      condition: >
+        open_read and container
+        and fd.name pmatch (*.dwg, *.dxf, *.rvt, *.bim)
+        and not user.name in (authorized_design_users)
+      output: >
+        Unauthorized blueprint access (user=%user.name file=%fd.name
+        container_id=%container.id container_name=%container.name)
+      priority: CRITICAL
+      tags: [blueprints, design, confidential]
+
+    - rule: Contract Document Modification
+      desc: Monitor modifications to contract documents
+      condition: >
+        open_write and container
+        and fd.directory startswith /data/contracts
+        and not user.name in (authorized_contract_managers)
+      output: >
+        Contract document modified (user=%user.name file=%fd.name
+        container_id=%container.id container_name=%container.name)
+      priority: WARNING
+      tags: [contracts, legal, audit]
+
+    - rule: Safety Record Tampering
+      desc: Detect unauthorized modifications to safety records
+      condition: >
+        evt.type in (open, write) and container
+        and fd.directory startswith /data/safety
+        and not user.name in (authorized_safety_officers)
+      output: >
+        Safety record modified (user=%user.name action=%evt.type
+        file=%fd.name container_id=%container.id)
+      priority: CRITICAL
+      tags: [safety, compliance, audit]
+
+    - rule: Cost Estimate Access
+      desc: Monitor access to cost estimation data
+      condition: >
+        open_read and container
+        and fd.directory startswith /data/estimates
+        and not user.name in (authorized_estimators)
+      output: >
+        Unauthorized cost estimate access (user=%user.name
+        file=%fd.name container_id=%container.id)
+      priority: WARNING
+      tags: [financial, confidential]
+
+    - rule: Permit Document Access
+      desc: Track access to permit and regulatory documents
+      condition: >
+        evt.type=open and container
+        and fd.directory startswith /data/permits
+        and not user.name in (authorized_permit_handlers)
+      output: >
+        Permit document accessed (user=%user.name file=%fd.name
+        container_id=%container.id container_name=%container.name)
+      priority: WARNING
+      tags: [permits, compliance]
+
+  authorized-construction-users.yaml: |
+    - list: authorized_design_users
+      items:
+        - architect
+        - design_lead
+        - project_manager
+        - bim_coordinator
+
+    - list: authorized_contract_managers
+      items:
+        - legal_officer
+        - contract_admin
+        - project_director
+
+    - list: authorized_safety_officers
+      items:
+        - safety_manager
+        - site_supervisor
+        - hse_officer
+
+    - list: authorized_estimators
+      items:
+        - cost_engineer
+        - quantity_surveyor
+        - finance_manager
+
+    - list: authorized_permit_handlers
+      items:
+        - permit_coordinator
+        - compliance_officer
+        - project_manager

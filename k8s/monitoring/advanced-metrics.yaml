@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: advanced-metrics
+  namespace: monitoring
+data:
+  keselamatan_kerja.yaml: |
+    metrik:
+      tingkat_keselamatan:
+        parameter:
+          - nama: "indeks_kecelakaan"
+            ambang_batas:
+              peringatan: "> 0.1 per 100 pekerja"
+              kritis: "> 0.3 per 100 pekerja"
+          - nama: "penggunaan_apd"
+            ambang_batas:
+              peringatan: "< 95%"
+              kritis: "< 90%"
+        peringatan:
+          - tipe: "sms"
+            penerima: ["supervisor_lapangan", "petugas_k3"]
+          - tipe: "email"
+            penerima: ["manajer_proyek", "direktur_operasional"]
+
+  kualitas_konstruksi.yaml: |
+    metrik:
+      pemeriksaan_beton:
+        parameter:
+          - nama: "kuat_tekan"
+            ambang_batas:
+              peringatan: "< design_strength + 10%"
+              kritis: "< design_strength"
+          - nama: "workability"
+            ambang_batas:
+              peringatan: "slump < 75mm atau > 125mm"
+              kritis: "slump < 50mm atau > 150mm"
+        tindakan_otomatis:
+          - kondisi: "kritis"
+            aksi: "hentikan_pengecoran"
+            notifikasi: "tim_teknis"
+
+  progres_proyek.yaml: |
+    metrik:
+      kemajuan_fisik:
+        parameter:
+          - nama: "deviasi_jadwal"
+            ambang_batas:
+              peringatan: "> 5% keterlambatan"
+              kritis: "> 10% keterlambatan"
+          - nama: "produktivitas_pekerja"
+            ambang_batas:
+              peringatan: "< 90% target"
+              kritis: "< 80% target"
+        analisis_otomatis:
+          - tipe: "prediksi_keterlambatan"
+            metode: "machine_learning"
+            interval: "harian"
+
+  pengendalian_biaya.yaml: |
+    metrik:
+      kinerja_keuangan:
+        parameter:
+          - nama: "cost_variance"
+            ambang_batas:
+              peringatan: "> 5% anggaran"
+              kritis: "> 10% anggaran"
+          - nama: "arus_kas"
+            ambang_batas:
+              peringatan: "< proyeksi - 10%"
+              kritis: "< proyeksi - 20%"
+        laporan_otomatis:
+          - tipe: "analisis_varians"
+            frekuensi: "mingguan"
+            penerima: ["direktur_keuangan", "manajer_proyek"]

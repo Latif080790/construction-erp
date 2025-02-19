@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: document-specific-rules
+  namespace: security
+data:
+  structural-documents.yaml: |
+    rules:
+      - name: structural_calculations
+        file_patterns: ["*.str", "*.cal", "*.xlsx"]
+        requirements:
+          - engineer_stamp: required
+          - revision_history: required
+          - load_calculations: required
+          - safety_factors: required
+        validation:
+          formulas:
+            - type: "load_bearing"
+              min_safety_factor: 2.5
+            - type: "stress_analysis"
+              max_deviation: 0.1
+
+  architectural-documents.yaml: |
+    rules:
+      - name: floor_plans
+        file_patterns: ["*.dwg", "*.rvt", "*.ifc"]
+        requirements:
+          - scale_indicator: required
+          - north_arrow: required
+          - grid_lines: required
+          - dimension_chains: required
+        validation:
+          metadata:
+            - building_code_version
+            - accessibility_compliance
+            - fire_safety_zones
+
+  mep-documents.yaml: |
+    rules:
+      - name: mechanical_systems
+        file_patterns: ["*.mep", "*.hvac"]
+        requirements:
+          - equipment_schedules: required
+          - system_diagrams: required
+          - maintenance_clearances: required
+        validation:
+          specifications:
+            - energy_efficiency_ratings
+            - noise_levels
+            - ventilation_rates
+
+  site-documents.yaml: |
+    rules:
+      - name: site_plans
+        file_patterns: ["*.sit", "*.civ"]
+        requirements:
+          - topography: required
+          - utilities: required
+          - setbacks: required
+        validation:
+          compliance:
+            - zoning_requirements
+            - environmental_impact
+            - drainage_calculations
+
+  contract-documents.yaml: |
+    rules:
+      - name: bid_documents
+        file_patterns: ["*.pdf", "*.doc"]
+        requirements:
+          - scope_of_work: required
+          - payment_terms: required
+          - completion_dates: required
+        validation:
+          legal:
+            - liability_clauses
+            - insurance_requirements
+            - warranty_terms

@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: enhanced-workflows
+  namespace: automation
+data:
+  manajemen_material.yaml: |
+    alur_kerja:
+      pemesanan_otomatis:
+        trigger:
+          - kondisi: "stok_minimum"
+            parameter:
+              level: "< 20%"
+              prioritas: "tinggi"
+          - kondisi: "prediksi_kebutuhan"
+            parameter:
+              periode: "2_minggu"
+        tindakan:
+          - tipe: "generate_po"
+            approval: "manajer_logistik"
+          - tipe: "notifikasi_supplier"
+            metode: ["email", "sistem_supplier"]
+          - tipe: "update_inventory"
+            sistem: "real_time"
+
+  manajemen_keselamatan.yaml: |
+    alur_kerja:
+      inspeksi_otomatis:
+        jadwal:
+          - tipe: "harian"
+            waktu: "awal_shift"
+          - tipe: "mingguan"
+            hari: "senin"
+        pemeriksaan:
+          - area: "zona_kerja"
+            parameter:
+              - "apd_pekerja"
+              - "kondisi_alat"
+              - "lingkungan_kerja"
+          - area: "penyimpanan"
+            parameter:
+              - "material_berbahaya"
+              - "akses_kontrol"
+              - "sistem_ventilasi"
+
+  pengendalian_kualitas.yaml: |
+    alur_kerja:
+      pemeriksaan_otomatis:
+        metode:
+          - tipe: "visual"
+            teknologi: "computer_vision"
+            parameter:
+              - "permukaan"
+              - "kerataan"
+              - "finishing"
+          - tipe: "struktural"
+            teknologi: "sensor_network"
+            parameter:
+              - "kekuatan"
+              - "stabilitas"
+              - "integritas"
+        tindakan:
+          - kondisi: "tidak_sesuai"
+            aksi:
+              - "stop_pekerjaan"
+              - "analisis_penyebab"
+              - "rencana_perbaikan"
+
+  manajemen_dokumen.yaml: |
+    alur_kerja:
+      kontrol_dokumen:
+        verifikasi:
+          - tipe: "gambar_kerja"
+            approval:
+              - "engineer"
+              - "supervisor"
+              - "qa_qc"
+          - tipe: "laporan_harian"
+            approval:
+              - "supervisor"
+              - "manajer_proyek"
+        distribusi:
+          - tipe: "otomatis"
+            penerima: "sesuai_role"
+          - tipe: "terjadwal"
+            waktu: "akhir_hari"

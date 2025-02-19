@@ -1,0 +1,118 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-verification
+  namespace: erp
+spec:
+  schedule: "0 2 * * *"  # Run at 2 AM daily
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: verify-backup
+            image: postgres:15-alpine
+            command:
+            - /bin/sh
+            - -c
+            - |
+              # Download latest backup
+              aws s3 cp s3://your-bucket/backups/$(aws s3 ls s3://your-bucket/backups/ | sort | tail -n 1 | awk '{print $4}') /verify/latest.dump
+
+              # Create temporary database
+              export PGHOST=localhost
+              export PGUSER=postgres
+              export PGPASSWORD=$VERIFY_DB_PASSWORD
+              
+              pg_ctl -D /tmp/verify_db -o "-p 5433" start
+              createdb -p 5433 verify_db
+              
+              # Restore backup
+              pg_restore -p 5433 -d verify_db /verify/latest.dump
+              
+              # Run verification queries
+              psql -p 5433 -d verify_db -c "
+                DO $$
+                DECLARE
+                  table_count INTEGER;
+                  data_integrity BOOLEAN := true;
+                  error_message TEXT;
+                BEGIN
+                  -- Check if all tables exist
+                  SELECT COUNT(*) INTO table_count FROM information_schema.tables 
+                  WHERE table_schema = 'public';
+                  
+                  IF table_count < 10 THEN
+                    RAISE EXCEPTION 'Missing tables. Expected at least 10, found %', table_count;
+                  END IF;
+                  
+                  -- Check data integrity
+                  -- Projects
+                  IF NOT EXISTS (SELECT 1 FROM projects LIMIT 1) THEN
+                    data_integrity := false;
+                    error_message := 'Projects table is empty';
+                  END IF;
+                  
+                  -- Resources
+                  IF NOT EXISTS (SELECT 1 FROM resources LIMIT 1) THEN
+                    data_integrity := false;
+                    error_message := 'Resources table is empty';
+                  END IF;
+                  
+                  -- Check foreign key integrity
+                  IF EXISTS (
+                    SELECT 1 FROM project_resources pr
+                    LEFT JOIN projects p ON pr.project_id = p.id
+                    WHERE p.id IS NULL
+                  ) THEN
+                    data_integrity := false;
+                    error_message := 'Foreign key integrity violation in project_resources';
+                  END IF;
+                  
+                  IF NOT data_integrity THEN
+                    RAISE EXCEPTION 'Backup verification failed: %', error_message;
+                  END IF;
+                END $$;
+              "
+              
+              # Cleanup
+              dropdb -p 5433 verify_db
+              pg_ctl -D /tmp/verify_db stop
+              
+              # Send notification
+              aws sns publish --topic-arn "$SNS_TOPIC_ARN" --message "Backup verification completed successfully"
+            env:
+            - name: VERIFY_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: backup-verify-secrets
+                  key: db-password
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: access-key
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: secret-key
+            - name: SNS_TOPIC_ARN
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: sns-topic-arn
+            volumeMounts:
+            - name: verify-data
+              mountPath: /verify
+            - name: temp-db
+              mountPath: /tmp/verify_db
+          volumes:
+          - name: verify-data
+            emptyDir: {}
+          - name: temp-db
+            emptyDir: {}
+          restartPolicy: OnFailure

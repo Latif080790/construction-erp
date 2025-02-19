@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: specific-regulations
+  namespace: compliance
+data:
+  building-codes.yaml: |
+    regulations:
+      - code: "IBC_2024"
+        checks:
+          - name: "fire_resistance_ratings"
+            parameters:
+              - construction_type
+              - occupancy_group
+              - building_height
+            validation:
+              min_rating: "${required_fire_rating}"
+          - name: "means_of_egress"
+            parameters:
+              - occupant_load
+              - exit_width
+              - travel_distance
+            validation:
+              max_travel_distance: "${max_distance}"
+
+  safety-standards.yaml: |
+    regulations:
+      - code: "OSHA_1926"
+        checks:
+          - name: "fall_protection"
+            parameters:
+              - working_height
+              - protection_type
+              - anchor_points
+            validation:
+              min_height_requirement: "6ft"
+          - name: "scaffolding_safety"
+            parameters:
+              - platform_width
+              - guardrail_height
+              - load_capacity
+            validation:
+              min_width: "18in"
+              min_guardrail: "42in"
+
+  environmental-regulations.yaml: |
+    regulations:
+      - code: "EPA_CONSTRUCTION"
+        checks:
+          - name: "stormwater_management"
+            parameters:
+              - site_area
+              - soil_type
+              - rainfall_data
+            validation:
+              retention_capacity: "${required_capacity}"
+          - name: "dust_control"
+            parameters:
+              - site_conditions
+              - wind_speed
+              - activity_type
+            validation:
+              max_particulate: "150μg/m3"
+
+  accessibility-standards.yaml: |
+    regulations:
+      - code: "ADA_2010"
+        checks:
+          - name: "wheelchair_accessibility"
+            parameters:
+              - door_width
+              - ramp_slope
+              - turning_space
+            validation:
+              min_door_width: "32in"
+              max_ramp_slope: "1:12"
+          - name: "bathroom_requirements"
+            parameters:
+              - clear_floor_space
+              - grab_bar_location
+              - fixture_heights
+            validation:
+              min_clear_space: "60in"
+
+  energy-codes.yaml: |
+    regulations:
+      - code: "IECC_2024"
+        checks:
+          - name: "envelope_requirements"
+            parameters:
+              - wall_assembly
+              - roof_assembly
+              - window_specs
+            validation:
+              min_r_value: "${required_r_value}"
+          - name: "lighting_efficiency"
+            parameters:
+              - lighting_power
+              - control_systems
+              - daylighting
+            validation:
+              max_power_density: "${max_lpd}"

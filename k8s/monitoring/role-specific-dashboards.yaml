@@ -1,0 +1,120 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: role-dashboards
+  namespace: monitoring
+data:
+  project_manager.json: |
+    {
+      "title": "Project Manager Overview",
+      "refresh": "5m",
+      "panels": [
+        {
+          "title": "Project Timeline",
+          "type": "timeline",
+          "metrics": ["phase_completion", "milestone_status", "critical_path_delays"]
+        },
+        {
+          "title": "Critical Issues",
+          "type": "alert-panel",
+          "metrics": ["high_priority_issues", "budget_variances", "schedule_delays"]
+        },
+        {
+          "title": "Resource Utilization",
+          "type": "gauge-grid",
+          "metrics": ["labor_utilization", "equipment_usage", "material_consumption"]
+        }
+      ]
+    }
+
+  site_engineer.json: |
+    {
+      "title": "Site Engineer Dashboard",
+      "refresh": "1m",
+      "panels": [
+        {
+          "title": "Technical Metrics",
+          "type": "metric-grid",
+          "metrics": ["structural_integrity", "material_quality", "construction_accuracy"]
+        },
+        {
+          "title": "Quality Control",
+          "type": "status-panel",
+          "metrics": ["inspection_results", "test_outcomes", "defect_tracking"]
+        },
+        {
+          "title": "Engineering Issues",
+          "type": "issue-tracker",
+          "metrics": ["technical_queries", "design_clarifications", "field_modifications"]
+        }
+      ]
+    }
+
+  safety_officer.json: |
+    {
+      "title": "Safety Officer View",
+      "refresh": "30s",
+      "panels": [
+        {
+          "title": "Safety Metrics",
+          "type": "alert-grid",
+          "metrics": ["incident_rate", "near_misses", "safety_violations"]
+        },
+        {
+          "title": "PPE Compliance",
+          "type": "compliance-chart",
+          "metrics": ["ppe_usage", "safety_training", "toolbox_talks"]
+        },
+        {
+          "title": "Hazard Monitoring",
+          "type": "heat-map",
+          "metrics": ["risk_areas", "accident_prone_zones", "environmental_hazards"]
+        }
+      ]
+    }
+
+  quality_manager.json: |
+    {
+      "title": "Quality Management Dashboard",
+      "refresh": "5m",
+      "panels": [
+        {
+          "title": "Quality Metrics",
+          "type": "gauge-panel",
+          "metrics": ["defect_rate", "rework_percentage", "inspection_pass_rate"]
+        },
+        {
+          "title": "Material Testing",
+          "type": "test-results",
+          "metrics": ["material_tests", "strength_tests", "conformance_tests"]
+        },
+        {
+          "title": "Documentation",
+          "type": "completion-tracker",
+          "metrics": ["qa_documents", "test_certificates", "inspection_reports"]
+        }
+      ]
+    }
+
+  environmental_officer.json: |
+    {
+      "title": "Environmental Monitoring",
+      "refresh": "5m",
+      "panels": [
+        {
+          "title": "Environmental Impact",
+          "type": "real-time-chart",
+          "metrics": ["dust_levels", "noise_levels", "water_quality"]
+        },
+        {
+          "title": "Waste Management",
+          "type": "pie-chart",
+          "metrics": ["waste_segregation", "recycling_rate", "disposal_tracking"]
+        },
+        {
+          "title": "Compliance Status",
+          "type": "status-board",
+          "metrics": ["permit_compliance", "environmental_incidents", "mitigation_measures"]
+        }
+      ]
+    }

@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: area-specific-metrics
+  namespace: monitoring
+data:
+  pekerjaan_pondasi.yaml: |
+    metrik:
+      pemancangan:
+        parameter:
+          - nama: "kedalaman_pancang"
+            pengukuran:
+              metode: "sensor_kedalaman"
+              interval: "per_tiang"
+              batas:
+                minimum: "sesuai_spesifikasi"
+                toleransi: "±50mm"
+          - nama: "daya_dukung"
+            pengukuran:
+              metode: "pile_driving_analyzer"
+              interval: "setiap_tiang"
+              batas:
+                minimum: "sesuai_perhitungan"
+                verifikasi: "loading_test"
+        monitoring:
+          real_time:
+            - "posisi_tiang"
+            - "sudut_kemiringan"
+            - "energi_pemancangan"
+
+  pekerjaan_beton.yaml: |
+    metrik:
+      pengecoran:
+        parameter:
+          - nama: "suhu_beton"
+            pengukuran:
+              metode: "sensor_suhu"
+              interval: "per_15_menit"
+              batas:
+                maksimum: "32°C"
+                minimum: "10°C"
+          - nama: "waktu_pengikatan"
+            pengukuran:
+              metode: "penetration_test"
+              interval: "per_batch"
+              batas:
+                maksimum: "sesuai_mix_design"
+        perawatan:
+          monitoring:
+            - "kelembaban"
+            - "suhu_permukaan"
+            - "waktu_curing"
+
+  pekerjaan_finishing.yaml: |
+    metrik:
+      kerataan:
+        parameter:
+          - nama: "level_lantai"
+            pengukuran:
+              metode: "laser_level"
+              interval: "per_100m2"
+              toleransi: "±3mm"
+          - nama: "vertikalitas_dinding"
+            pengukuran:
+              metode: "total_station"
+              interval: "per_dinding"
+              toleransi: "±5mm"
+        kualitas:
+          inspeksi:
+            - "tekstur_permukaan"
+            - "keseragaman_warna"
+            - "sambungan_material"
+
+  sistem_mep.yaml: |
+    metrik:
+      kelistrikan:
+        parameter:
+          - nama: "beban_panel"
+            pengukuran:
+              metode: "power_analyzer"
+              interval: "real_time"
+              batas:
+                maksimum: "80% kapasitas"
+          - nama: "kualitas_daya"
+            pengukuran:
+              metode: "power_quality_meter"
+              interval: "kontinyu"
+              parameter:
+                - "harmonik"
+                - "faktor_daya"
+                - "voltage_drop"
+        monitoring:
+          otomatis:
+            - "distribusi_beban"
+            - "suhu_panel"
+            - "sistem_grounding"

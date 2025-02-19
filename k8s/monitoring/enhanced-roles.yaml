@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: enhanced-roles
+  namespace: monitoring
+data:
+  ahli_geoteknik.yaml: |
+    fitur:
+      analisis_tanah:
+        pemantauan:
+          - tipe: "kondisi_tanah"
+            parameter:
+              - "daya_dukung"
+              - "kadar_air"
+              - "tingkat_pemadatan"
+          - tipe: "stabilitas_lereng"
+            parameter:
+              - "faktor_keamanan"
+              - "pergerakan_tanah"
+              - "drainase"
+        peringatan:
+          otomatis:
+            - kondisi: "pergerakan_berlebih"
+              tindakan:
+                - "evaluasi_cepat"
+                - "rekomendasi_penanganan"
+                - "notifikasi_darurat"
+
+  koordinator_bim.yaml: |
+    fitur:
+      manajemen_model:
+        koordinasi:
+          - aspek: "clash_detection"
+            parameter:
+              - "konflik_mep"
+              - "konflik_struktural"
+              - "ruang_bebas"
+          - aspek: "sequence_4d"
+            parameter:
+              - "urutan_konstruksi"
+              - "jadwal_pemasangan"
+              - "alokasi_sumber_daya"
+        visualisasi:
+          real_time:
+            - "progress_aktual"
+            - "deviasi_desain"
+            - "area_kritis"
+
+  spesialis_mep.yaml: |
+    fitur:
+      sistem_mep:
+        komisioning:
+          - sistem: "mekanikal"
+            checklist:
+              - "tekanan_operasi"
+              - "efisiensi_sistem"
+              - "keseimbangan_beban"
+          - sistem: "elektrikal"
+            checklist:
+              - "beban_listrik"
+              - "sistem_grounding"
+              - "proteksi_petir"
+        pemeliharaan:
+          prediktif:
+            - "analisis_vibrasi"
+            - "termografi"
+            - "analisis_oli"
+
+  ahli_material.yaml: |
+    fitur:
+      pengujian_material:
+        laboratorium:
+          - tipe: "beton"
+            parameter:
+              - "kuat_tekan"
+              - "slump_test"
+              - "kandungan_udara"
+          - tipe: "baja"
+            parameter:
+              - "kuat_tarik"
+              - "elongasi"
+              - "komposisi_kimia"
+        sertifikasi:
+          otomatis:
+            - "hasil_pengujian"
+            - "rekomendasi_penggunaan"
+            - "batasan_aplikasi"

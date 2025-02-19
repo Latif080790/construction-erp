@@ -1,0 +1,163 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: compliance-report-generator
+  namespace: compliance
+spec:
+  schedule: "0 1 * * *"  # Daily at 1 AM
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: report-generator
+            image: compliance-reporter:latest
+            env:
+            - name: REPORT_TYPES
+              value: "safety,environmental,quality,regulatory"
+            volumeMounts:
+            - name: report-config
+              mountPath: /etc/compliance/config
+            - name: report-output
+              mountPath: /reports
+          volumes:
+          - name: report-config
+            configMap:
+              name: compliance-report-config
+          - name: report-output
+            persistentVolumeClaim:
+              claimName: report-storage
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: compliance-report-config
+  namespace: compliance
+data:
+  report-templates.yaml: |
+    templates:
+      - name: safety_compliance
+        sections:
+          - title: "Safety Incident Summary"
+            metrics:
+              - incident_count
+              - severity_distribution
+              - response_times
+            charts:
+              - type: "trend"
+                data: "monthly_incidents"
+              - type: "breakdown"
+                data: "incident_types"
+
+          - title: "Safety Training Compliance"
+            metrics:
+              - training_completion_rate
+              - certification_status
+              - upcoming_renewals
+            charts:
+              - type: "progress"
+                data: "training_completion"
+
+      - name: environmental_compliance
+        sections:
+          - title: "Environmental Impact"
+            metrics:
+              - waste_management
+              - emissions_levels
+              - resource_usage
+            charts:
+              - type: "time_series"
+                data: "daily_emissions"
+
+          - title: "Sustainability Metrics"
+            metrics:
+              - recycling_rate
+              - energy_efficiency
+              - water_conservation
+            charts:
+              - type: "comparison"
+                data: "industry_benchmarks"
+
+      - name: quality_control
+        sections:
+          - title: "Quality Metrics"
+            metrics:
+              - defect_rate
+              - rework_percentage
+              - inspection_results
+            charts:
+              - type: "pareto"
+                data: "defect_categories"
+
+          - title: "Material Compliance"
+            metrics:
+              - material_certifications
+              - supplier_compliance
+              - quality_tests
+            charts:
+              - type: "status"
+                data: "material_approval"
+
+      - name: regulatory_compliance
+        sections:
+          - title: "Permit Status"
+            metrics:
+              - active_permits
+              - pending_approvals
+              - expiring_permits
+            charts:
+              - type: "timeline"
+                data: "permit_lifecycle"
+
+          - title: "Code Compliance"
+            metrics:
+              - building_code_violations
+              - correction_status
+              - inspection_results
+            charts:
+              - type: "compliance"
+                data: "code_requirements"
+
+  distribution-config.yaml: |
+    recipients:
+      - group: "management"
+        reports: ["all"]
+        format: ["pdf", "dashboard"]
+        frequency: "daily"
+
+      - group: "safety_team"
+        reports: ["safety_compliance"]
+        format: ["pdf", "excel"]
+        frequency: "daily"
+
+      - group: "environmental_team"
+        reports: ["environmental_compliance"]
+        format: ["pdf", "excel"]
+        frequency: "weekly"
+
+      - group: "quality_team"
+        reports: ["quality_control"]
+        format: ["pdf", "dashboard"]
+        frequency: "daily"
+
+      - group: "regulatory_team"
+        reports: ["regulatory_compliance"]
+        format: ["pdf", "excel"]
+        frequency: "weekly"
+
+  notification-config.yaml: |
+    notifications:
+      - trigger: "compliance_below_threshold"
+        channels: ["email", "slack"]
+        threshold: 0.95
+        message_template: "Compliance rate has fallen below {threshold}%"
+
+      - trigger: "critical_violation"
+        channels: ["email", "sms", "slack"]
+        priority: "high"
+        message_template: "Critical compliance violation detected: {violation_details}"
+
+      - trigger: "report_generated"
+        channels: ["email"]
+        priority: "normal"
+        message_template: "New compliance report available: {report_link}"

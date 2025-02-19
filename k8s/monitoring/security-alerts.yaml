@@ -1,0 +1,94 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: construction-security-alerts
+  namespace: monitoring
+spec:
+  groups:
+    - name: document_security
+      rules:
+        - alert: UnauthorizedBlueprintAccess
+          expr: rate(document_access_denied{document_type="blueprint"}[5m]) > 3
+          for: 5m
+          labels:
+            severity: critical
+            category: security
+          annotations:
+            summary: "Multiple unauthorized blueprint access attempts detected"
+            description: "{{ $value }} unauthorized attempts to access blueprints in the last 5 minutes"
+
+        - alert: ContractModificationOutsideHours
+          expr: document_modifications{document_type="contract"} > 0 and (hour() < 9 or hour() > 17)
+          for: 1m
+          labels:
+            severity: warning
+            category: security
+          annotations:
+            summary: "Contract modification detected outside business hours"
+            description: "Contract {{ $labels.document_id }} modified by {{ $labels.user }}"
+
+    - name: compliance_alerts
+      rules:
+        - alert: PermitExpiringSoon
+          expr: time() - permit_expiry_time < 86400 * 30
+          for: 1h
+          labels:
+            severity: warning
+            category: compliance
+          annotations:
+            summary: "Permit expiring within 30 days"
+            description: "Permit {{ $labels.permit_id }} will expire on {{ $labels.expiry_date }}"
+
+        - alert: SafetyDocumentationIncomplete
+          expr: safety_document_completeness < 0.95
+          for: 1h
+          labels:
+            severity: critical
+            category: compliance
+          annotations:
+            summary: "Safety documentation below required completeness"
+            description: "Safety document {{ $labels.document_id }} is {{ $value }}% complete"
+
+    - name: access_control
+      rules:
+        - alert: MultipleFailedLogins
+          expr: rate(login_failures[15m]) > 5
+          for: 5m
+          labels:
+            severity: high
+            category: security
+          annotations:
+            summary: "Multiple failed login attempts detected"
+            description: "{{ $value }} failed login attempts for user {{ $labels.username }}"
+
+        - alert: PrivilegeEscalationAttempt
+          expr: privilege_escalation_attempts > 0
+          for: 1m
+          labels:
+            severity: critical
+            category: security
+          annotations:
+            summary: "Privilege escalation attempt detected"
+            description: "User {{ $labels.username }} attempted to escalate privileges"
+
+    - name: data_integrity
+      rules:
+        - alert: DocumentChecksumMismatch
+          expr: document_checksum_validation == 0
+          for: 1m
+          labels:
+            severity: critical
+            category: integrity
+          annotations:
+            summary: "Document integrity check failed"
+            description: "Checksum mismatch detected for document {{ $labels.document_id }}"
+
+        - alert: UnexpectedFileModification
+          expr: rate(file_modifications{authorized!="true"}[5m]) > 0
+          for: 1m
+          labels:
+            severity: high
+            category: integrity
+          annotations:
+            summary: "Unauthorized file modification detected"
+            description: "File {{ $labels.filename }} modified without proper authorization"

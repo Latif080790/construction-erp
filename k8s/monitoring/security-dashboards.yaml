@@ -1,0 +1,117 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: security-dashboards
+  namespace: monitoring
+data:
+  document-security.json: |
+    {
+      "title": "Document Security Dashboard",
+      "panels": [
+        {
+          "title": "Document Access Patterns",
+          "type": "graph",
+          "metrics": [
+            "document_access_count",
+            "unauthorized_access_attempts",
+            "document_modifications"
+          ],
+          "timeRange": "24h",
+          "alerts": {
+            "unauthorized_access": "count > 5"
+          }
+        },
+        {
+          "title": "Document Compliance Status",
+          "type": "gauge",
+          "metrics": [
+            "compliant_documents_percentage",
+            "pending_reviews",
+            "failed_validations"
+          ]
+        }
+      ]
+    }
+
+  compliance-monitoring.json: |
+    {
+      "title": "Compliance Monitoring Dashboard",
+      "panels": [
+        {
+          "title": "Regulatory Compliance",
+          "type": "heatmap",
+          "metrics": [
+            "building_code_violations",
+            "safety_standard_compliance",
+            "environmental_compliance"
+          ],
+          "alerts": {
+            "critical_violation": "severity >= high"
+          }
+        },
+        {
+          "title": "Certification Status",
+          "type": "status",
+          "metrics": [
+            "expired_certifications",
+            "pending_renewals",
+            "valid_certificates"
+          ]
+        }
+      ]
+    }
+
+  security-incidents.json: |
+    {
+      "title": "Security Incidents Dashboard",
+      "panels": [
+        {
+          "title": "Active Incidents",
+          "type": "table",
+          "metrics": [
+            "incident_type",
+            "severity",
+            "response_time",
+            "resolution_status"
+          ],
+          "alerts": {
+            "unresolved_critical": "duration > 4h"
+          }
+        },
+        {
+          "title": "Incident Trends",
+          "type": "timeline",
+          "metrics": [
+            "incident_frequency",
+            "mean_time_to_resolve",
+            "repeat_incidents"
+          ]
+        }
+      ]
+    }
+
+  audit-trails.json: |
+    {
+      "title": "Audit Trails Dashboard",
+      "panels": [
+        {
+          "title": "Document Modifications",
+          "type": "activity",
+          "metrics": [
+            "modification_type",
+            "user_responsible",
+            "timestamp",
+            "affected_documents"
+          ]
+        },
+        {
+          "title": "Access Patterns",
+          "type": "graph",
+          "metrics": [
+            "access_by_role",
+            "access_by_location",
+            "access_by_time"
+          ]
+        }
+      ]
+    }

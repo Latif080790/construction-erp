@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: predictive-models
+  namespace: analytics
+data:
+  schedule-prediction.yaml: |
+    model:
+      name: "schedule_predictor"
+      type: "gradient_boosting"
+      features:
+        - historical_delays
+        - weather_forecast
+        - resource_availability
+        - task_dependencies
+        - crew_performance
+      parameters:
+        confidence_level: 0.95
+        prediction_horizon: "30d"
+        update_frequency: "daily"
+      outputs:
+        - completion_date_prediction
+        - delay_risk_factors
+        - critical_path_analysis
+
+  resource-optimization.yaml: |
+    model:
+      name: "resource_optimizer"
+      type: "linear_programming"
+      features:
+        - labor_productivity
+        - equipment_utilization
+        - material_consumption
+        - cost_constraints
+        - time_constraints
+      parameters:
+        optimization_window: "14d"
+        update_frequency: "daily"
+      outputs:
+        - optimal_resource_allocation
+        - cost_efficiency_metrics
+        - utilization_recommendations
+
+  quality-prediction.yaml: |
+    model:
+      name: "quality_predictor"
+      type: "neural_network"
+      features:
+        - material_properties
+        - environmental_conditions
+        - worker_experience
+        - equipment_condition
+        - process_parameters
+      parameters:
+        training_window: "90d"
+        prediction_accuracy: 0.90
+      outputs:
+        - defect_probability
+        - quality_risk_areas
+        - preventive_actions
+
+  safety-risk-analysis.yaml: |
+    model:
+      name: "safety_risk_analyzer"
+      type: "random_forest"
+      features:
+        - incident_history
+        - site_conditions
+        - work_complexity
+        - fatigue_metrics
+        - safety_compliance
+      parameters:
+        risk_threshold: 0.75
+        update_frequency: "hourly"
+      outputs:
+        - risk_probability_map
+        - high_risk_activities
+        - preventive_measures
+
+  weather-impact-model.yaml: |
+    model:
+      name: "weather_impact_predictor"
+      type: "ensemble"
+      features:
+        - weather_forecast
+        - activity_sensitivity
+        - material_exposure
+        - site_conditions
+        - historical_impact
+      parameters:
+        forecast_horizon: "7d"
+        confidence_level: 0.85
+      outputs:
+        - work_disruption_probability
+        - mitigation_recommendations
+        - schedule_adjustments

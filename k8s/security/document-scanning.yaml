@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: document-scanning-rules
+  namespace: security
+data:
+  scanning-rules.yaml: |
+    rules:
+      - name: blueprint_watermark
+        description: "Ensure blueprints have required watermarks"
+        patterns:
+          - type: "image_analysis"
+            target: "*.pdf,*.dwg,*.rvt"
+            check: "watermark_present"
+            required_text: "CONFIDENTIAL - ${PROJECT_ID}"
+
+      - name: sensitive_information
+        description: "Detect sensitive information in documents"
+        patterns:
+          - type: "text_analysis"
+            target: "*.doc,*.docx,*.pdf,*.txt"
+            regex:
+              - "\\b\\d{3}-\\d{2}-\\d{4}\\b"  # SSN
+              - "\\b\\d{16}\\b"  # Credit Card
+              - "\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}\\b"  # Email
+
+      - name: document_metadata
+        description: "Verify document metadata compliance"
+        patterns:
+          - type: "metadata_analysis"
+            target: "*"
+            required_fields:
+              - "project_id"
+              - "document_owner"
+              - "classification_level"
+              - "retention_period"
+
+      - name: digital_signatures
+        description: "Verify digital signatures on official documents"
+        patterns:
+          - type: "signature_verification"
+            target: "*.pdf,*.docx"
+            requirements:
+              - "valid_signature"
+              - "trusted_authority"
+              - "not_expired"
+
+  scanning-schedule.yaml: |
+    schedules:
+      - name: "realtime_scan"
+        trigger: "on_upload"
+        priority: "high"
+        target:
+          - "contracts/*"
+          - "permits/*"
+          - "safety_records/*"
+
+      - name: "daily_scan"
+        trigger: "0 0 * * *"
+        priority: "medium"
+        target:
+          - "blueprints/*"
+          - "specifications/*"
+          - "reports/*"
+
+      - name: "weekly_scan"
+        trigger: "0 0 * * 0"
+        priority: "low"
+        target:
+          - "archived/*"
+          - "references/*"
+
+  response-actions.yaml: |
+    actions:
+      - trigger: "sensitive_information_detected"
+        steps:
+          - "quarantine_document"
+          - "notify_security_team"
+          - "log_incident"
+          - "start_investigation"
+
+      - trigger: "invalid_signature"
+        steps:
+          - "block_document_access"
+          - "notify_document_owner"
+          - "request_verification"
+
+      - trigger: "missing_metadata"
+        steps:
+          - "flag_for_review"
+          - "notify_uploader"
+          - "request_metadata_update"

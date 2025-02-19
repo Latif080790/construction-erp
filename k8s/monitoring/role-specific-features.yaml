@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: role-specific-features
+  namespace: monitoring
+data:
+  pengawas_lapangan.yaml: |
+    fitur:
+      pemantauan_aktivitas:
+        dashboard:
+          - nama: "Aktivitas Harian"
+            komponen:
+              - "jadwal_pekerja"
+              - "alokasi_peralatan"
+              - "stok_material"
+          - nama: "Laporan Kemajuan"
+            komponen:
+              - "progres_fisik"
+              - "kendala_lapangan"
+              - "dokumentasi_foto"
+        alat_bantu:
+          - nama: "Checklist Digital"
+            fitur:
+              - "pemeriksaan_kualitas"
+              - "verifikasi_keselamatan"
+              - "konfirmasi_spesifikasi"
+
+  manajer_logistik.yaml: |
+    fitur:
+      manajemen_material:
+        dashboard:
+          - nama: "Status Inventori"
+            komponen:
+              - "level_stok"
+              - "material_kritis"
+              - "jadwal_pengiriman"
+          - nama: "Analisis Penggunaan"
+            komponen:
+              - "tren_konsumsi"
+              - "efisiensi_penggunaan"
+              - "prediksi_kebutuhan"
+        otomatisasi:
+          - nama: "Pemesanan Otomatis"
+            kriteria:
+              - "level_minimum"
+              - "lead_time"
+              - "harga_optimal"
+
+  inspektor_mutu.yaml: |
+    fitur:
+      kendali_kualitas:
+        alat_pemeriksaan:
+          - nama: "Formulir Digital"
+            elemen:
+              - "checklist_standar"
+              - "dokumentasi_foto"
+              - "catatan_ketidaksesuaian"
+          - nama: "Analisis Kualitas"
+            elemen:
+              - "tren_defect"
+              - "analisis_akar_masalah"
+              - "rekomendasi_perbaikan"
+        integrasi:
+          - nama: "Laboratorium"
+            fitur:
+              - "hasil_pengujian"
+              - "kalibrasi_peralatan"
+              - "sertifikasi_material"
+
+  manajer_keuangan.yaml: |
+    fitur:
+      pengendalian_biaya:
+        dashboard:
+          - nama: "Kinerja Keuangan"
+            komponen:
+              - "analisis_biaya"
+              - "proyeksi_arus_kas"
+              - "status_pembayaran"
+          - nama: "Laporan Otomatis"
+            komponen:
+              - "laporan_mingguan"
+              - "analisis_varians"
+              - "prediksi_biaya"
+        peringatan:
+          - nama: "Alert Keuangan"
+            parameter:
+              - "overbudget"
+              - "keterlambatan_pembayaran"
+              - "proyeksi_negatif"

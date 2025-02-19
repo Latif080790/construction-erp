@@ -1,0 +1,135 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notification-rules
+  namespace: monitoring
+data:
+  structural-notifications.yaml: |
+    rules:
+      - trigger: "critical_structural_change"
+        conditions:
+          - metric: "structural_integrity"
+            threshold: "<100%"
+        notifications:
+          - channel: "immediate"
+            recipients:
+              - role: "structural_engineer"
+              - role: "project_manager"
+            methods: ["email", "sms", "slack"]
+            priority: "critical"
+
+      - trigger: "load_bearing_modification"
+        conditions:
+          - metric: "load_calculation"
+            status: "modified"
+        notifications:
+          - channel: "urgent"
+            recipients:
+              - role: "engineering_team"
+              - role: "safety_officer"
+            methods: ["email", "slack"]
+            priority: "high"
+
+  safety-notifications.yaml: |
+    rules:
+      - trigger: "safety_violation"
+        conditions:
+          - metric: "safety_compliance"
+            threshold: "<95%"
+        notifications:
+          - channel: "immediate"
+            recipients:
+              - role: "safety_manager"
+              - role: "site_supervisor"
+            methods: ["sms", "email", "push"]
+            priority: "critical"
+
+      - trigger: "hazard_condition"
+        conditions:
+          - metric: "hazard_level"
+            status: "elevated"
+        notifications:
+          - channel: "urgent"
+            recipients:
+              - role: "safety_team"
+              - role: "site_workers"
+            methods: ["push", "display_board"]
+            priority: "high"
+
+  permit-notifications.yaml: |
+    rules:
+      - trigger: "permit_expiration"
+        conditions:
+          - metric: "days_to_expiry"
+            threshold: "<30"
+        notifications:
+          - channel: "scheduled"
+            recipients:
+              - role: "permit_coordinator"
+              - role: "project_manager"
+            methods: ["email", "dashboard"]
+            priority: "medium"
+
+      - trigger: "permit_violation"
+        conditions:
+          - metric: "permit_compliance"
+            status: "violated"
+        notifications:
+          - channel: "immediate"
+            recipients:
+              - role: "legal_team"
+              - role: "compliance_officer"
+            methods: ["email", "slack"]
+            priority: "high"
+
+  quality-notifications.yaml: |
+    rules:
+      - trigger: "quality_deviation"
+        conditions:
+          - metric: "quality_score"
+            threshold: "<90%"
+        notifications:
+          - channel: "urgent"
+            recipients:
+              - role: "quality_manager"
+              - role: "site_engineer"
+            methods: ["email", "dashboard"]
+            priority: "high"
+
+      - trigger: "material_failure"
+        conditions:
+          - metric: "material_test"
+            status: "failed"
+        notifications:
+          - channel: "immediate"
+            recipients:
+              - role: "quality_team"
+              - role: "procurement"
+            methods: ["email", "slack"]
+            priority: "critical"
+
+  environmental-notifications.yaml: |
+    rules:
+      - trigger: "emission_excess"
+        conditions:
+          - metric: "emission_level"
+            threshold: ">limit"
+        notifications:
+          - channel: "immediate"
+            recipients:
+              - role: "environmental_officer"
+              - role: "project_manager"
+            methods: ["email", "sms"]
+            priority: "critical"
+
+      - trigger: "waste_management"
+        conditions:
+          - metric: "waste_compliance"
+            threshold: "<85%"
+        notifications:
+          - channel: "scheduled"
+            recipients:
+              - role: "site_manager"
+              - role: "environmental_team"
+            methods: ["email", "dashboard"]
+            priority: "medium"

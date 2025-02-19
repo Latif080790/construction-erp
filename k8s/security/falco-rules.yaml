@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: falco-rules
+  namespace: security
+data:
+  custom-rules.yaml: |
+    - rule: Unauthorized Process in Container
+      desc: Detect unauthorized process execution in containers
+      condition: >
+        spawned_process and container
+        and not (container.image.repository in (authorized_images))
+        and not proc.name in (authorized_processes)
+      output: >
+        Unauthorized process spawned in container (user=%user.name
+        command=%proc.cmdline container_id=%container.id
+        container_name=%container.name image=%container.image.repository)
+      priority: WARNING
+      tags: [process, container]
+
+    - rule: Sensitive File Access
+      desc: Detect access to sensitive files
+      condition: >
+        open_read and container
+        and fd.name startswith /etc/
+        and not proc.name in (authorized_processes)
+      output: >
+        Sensitive file accessed in container (user=%user.name
+        file=%fd.name container_id=%container.id
+        container_name=%container.name)
+      priority: WARNING
+      tags: [filesystem, container]
+
+    - rule: Outbound Network Connection
+      desc: Detect unexpected outbound network connections
+      condition: >
+        evt.type=connect and evt.dir=< and container
+        and not fd.sip in (allowed_networks)
+        and not proc.name in (authorized_processes)
+      output: >
+        Unexpected outbound connection (user=%user.name
+        connection=%fd.name container_id=%container.id
+        container_name=%container.name destination=%fd.sip)
+      priority: WARNING
+      tags: [network, container]
+
+    - rule: Container Privilege Escalation
+      desc: Detect privilege escalation attempts in containers
+      condition: >
+        evt.type=setuid and container
+        and not proc.name in (authorized_processes)
+      output: >
+        Privilege escalation attempt in container (user=%user.name
+        process=%proc.name container_id=%container.id
+        container_name=%container.name)
+      priority: CRITICAL
+      tags: [process, container]
+
+    - rule: Container Runtime Modification
+      desc: Detect modifications to container runtime files
+      condition: >
+        evt.type=open and evt.dir=> and container
+        and fd.name startswith /var/run/docker
+        and not proc.name in (authorized_processes)
+      output: >
+        Container runtime files accessed (user=%user.name
+        file=%fd.name container_id=%container.id
+        container_name=%container.name)
+      priority: CRITICAL
+      tags: [filesystem, container]
+
+  authorized-lists.yaml: |
+    - list: authorized_images
+      items:
+        - your-registry.com/erp-backend
+        - your-registry.com/erp-frontend
+        - your-registry.com/erp-worker
+
+    - list: authorized_processes
+      items:
+        - nginx
+        - python
+        - node
+        - gunicorn
+        - celery
+
+    - list: allowed_networks
+      items:
+        - 10.0.0.0/8
+        - 172.16.0.0/12
+        - 192.168.0.0/16

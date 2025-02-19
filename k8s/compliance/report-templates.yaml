@@ -1,0 +1,127 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: compliance-report-templates
+  namespace: compliance
+data:
+  structural-compliance.yaml: |
+    template:
+      title: "Structural Engineering Compliance Report"
+      sections:
+        - name: "Calculation Reviews"
+          metrics:
+            - name: "calculation_accuracy"
+              threshold: 100%
+              validation: "strict"
+            - name: "safety_factor_compliance"
+              threshold: 100%
+              validation: "strict"
+          charts:
+            - type: "validation_summary"
+              data: "calculation_reviews"
+
+        - name: "Load Testing Results"
+          metrics:
+            - name: "load_test_coverage"
+              threshold: 95%
+            - name: "stress_test_results"
+              threshold: "within_limits"
+          charts:
+            - type: "test_results"
+              data: "load_tests"
+
+  fire-safety-compliance.yaml: |
+    template:
+      title: "Fire Safety Compliance Report"
+      sections:
+        - name: "Egress Compliance"
+          metrics:
+            - name: "egress_path_clearance"
+              threshold: 100%
+            - name: "emergency_lighting"
+              threshold: 100%
+          charts:
+            - type: "compliance_map"
+              data: "egress_paths"
+
+        - name: "Fire Protection Systems"
+          metrics:
+            - name: "sprinkler_coverage"
+              threshold: 100%
+            - name: "alarm_system_status"
+              threshold: "operational"
+          charts:
+            - type: "system_status"
+              data: "fire_protection"
+
+  material-quality-compliance.yaml: |
+    template:
+      title: "Material Quality Compliance Report"
+      sections:
+        - name: "Material Testing"
+          metrics:
+            - name: "test_completion_rate"
+              threshold: 98%
+            - name: "material_certification"
+              threshold: 100%
+          charts:
+            - type: "test_summary"
+              data: "material_tests"
+
+        - name: "Quality Control"
+          metrics:
+            - name: "inspection_coverage"
+              threshold: 100%
+            - name: "defect_rate"
+              threshold: "<2%"
+          charts:
+            - type: "quality_metrics"
+              data: "inspections"
+
+  environmental-compliance.yaml: |
+    template:
+      title: "Environmental Compliance Report"
+      sections:
+        - name: "Emissions Monitoring"
+          metrics:
+            - name: "dust_levels"
+              threshold: "<150μg/m3"
+            - name: "noise_levels"
+              threshold: "<85dB"
+          charts:
+            - type: "environmental_metrics"
+              data: "emissions"
+
+        - name: "Waste Management"
+          metrics:
+            - name: "recycling_rate"
+              threshold: ">75%"
+            - name: "hazardous_waste_handling"
+              threshold: 100%
+          charts:
+            - type: "waste_metrics"
+              data: "waste_management"
+
+  permit-compliance.yaml: |
+    template:
+      title: "Permit Compliance Report"
+      sections:
+        - name: "Active Permits"
+          metrics:
+            - name: "permit_validity"
+              threshold: 100%
+            - name: "condition_compliance"
+              threshold: 100%
+          charts:
+            - type: "permit_status"
+              data: "active_permits"
+
+        - name: "Inspection Results"
+          metrics:
+            - name: "inspection_pass_rate"
+              threshold: ">95%"
+            - name: "violation_resolution"
+              threshold: "<48h"
+          charts:
+            - type: "inspection_summary"
+              data: "permit_inspections"

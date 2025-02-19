@@ -1,0 +1,104 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: construction-alert-thresholds
+  namespace: monitoring
+spec:
+  groups:
+    - name: foundation_alerts
+      rules:
+        - alert: SoilCompactionBelow
+          expr: foundation_soil_compaction < 0.95
+          for: 5m
+          labels:
+            severity: critical
+            phase: foundation
+          annotations:
+            summary: "Soil compaction below required density"
+            
+        - alert: ConcreteStrengthLow
+          expr: concrete_strength_tests < required_strength * 0.98
+          for: 1h
+          labels:
+            severity: critical
+            phase: foundation
+
+    - name: structural_alerts
+      rules:
+        - alert: SteelDeviationExcessive
+          expr: steel_installation_accuracy > 5
+          for: 5m
+          labels:
+            severity: critical
+            phase: structural
+            
+        - alert: ColumnVerticalityError
+          expr: column_verticality > 0.5
+          for: 5m
+          labels:
+            severity: high
+            phase: structural
+
+    - name: mep_alerts
+      rules:
+        - alert: PressureTestFailure
+          expr: pipe_pressure_tests < 0.95
+          for: 1m
+          labels:
+            severity: critical
+            phase: mep
+            
+        - alert: LoadImbalanceDetected
+          expr: electrical_load_balance > 10
+          for: 15m
+          labels:
+            severity: warning
+            phase: mep
+
+    - name: finishing_alerts
+      rules:
+        - alert: SurfaceFlatnessDeviation
+          expr: surface_flatness > tolerance_limit
+          for: 5m
+          labels:
+            severity: warning
+            phase: finishing
+            
+        - alert: PaintThicknessBelow
+          expr: paint_thickness < min_thickness
+          for: 5m
+          labels:
+            severity: warning
+            phase: finishing
+
+    - name: environmental_alerts
+      rules:
+        - alert: DustLevelsCritical
+          expr: dust_concentration > 150
+          for: 10m
+          labels:
+            severity: critical
+            category: environmental
+            
+        - alert: NoiseLevelExcessive
+          expr: noise_level > 85
+          for: 15m
+          labels:
+            severity: high
+            category: environmental
+
+    - name: safety_alerts
+      rules:
+        - alert: UnsafeAccessDetected
+          expr: unsafe_access_incidents > 0
+          for: 1m
+          labels:
+            severity: critical
+            category: safety
+            
+        - alert: PPEComplianceLow
+          expr: ppe_compliance_rate < 0.98
+          for: 15m
+          labels:
+            severity: high
+            category: safety

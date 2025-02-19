@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: specialized-workflows
+  namespace: automation
+data:
+  alur_kerja_kualitas.yaml: |
+    workflow:
+      inspeksi_berkala:
+        jadwal:
+          - tipe: "harian"
+            waktu: ["pagi", "sore"]
+            area: ["struktural", "arsitektur"]
+          - tipe: "mingguan"
+            hari: "jumat"
+            area: ["mep", "finishing"]
+        tindakan:
+          otomatis:
+            - kondisi: "tidak_sesuai"
+              aksi:
+                - "dokumentasi_masalah"
+                - "notifikasi_pihak_terkait"
+                - "pembuatan_ncr"
+            - kondisi: "kritis"
+              aksi:
+                - "penghentian_pekerjaan"
+                - "investigasi_mendalam"
+                - "rapat_darurat"
+
+  alur_kerja_keselamatan.yaml: |
+    workflow:
+      pemeriksaan_k3:
+        rutin:
+          - area: "zona_kerja"
+            parameter:
+              - "kelengkapan_apd"
+              - "kondisi_peralatan"
+              - "prosedur_kerja"
+          - area: "area_berbahaya"
+            parameter:
+              - "izin_kerja"
+              - "pengamanan_area"
+              - "tim_tanggap_darurat"
+        respons:
+          otomatis:
+            - trigger: "pelanggaran"
+              tindakan:
+                - "peringatan_pekerja"
+                - "pelatihan_ulang"
+                - "evaluasi_prosedur"
+
+  alur_kerja_pengadaan.yaml: |
+    workflow:
+      manajemen_supplier:
+        evaluasi:
+          - aspek: "kinerja"
+            kriteria:
+              - "ketepatan_waktu"
+              - "kualitas_material"
+              - "respon_layanan"
+          - aspek: "finansial"
+            kriteria:
+              - "harga_kompetitif"
+              - "terms_pembayaran"
+              - "stabilitas_keuangan"
+        tindakan:
+          otomatis:
+            - kondisi: "kinerja_buruk"
+              aksi:
+                - "peringatan_supplier"
+                - "review_kontrak"
+                - "pencarian_alternatif"
+
+  alur_kerja_dokumentasi.yaml: |
+    workflow:
+      manajemen_dokumen:
+        klasifikasi:
+          - tipe: "teknis"
+            dokumen:
+              - "gambar_kerja"
+              - "spesifikasi"
+              - "metode_kerja"
+          - tipe: "administrasi"
+            dokumen:
+              - "kontrak"
+              - "izin"
+              - "laporan"
+        proses:
+          otomatis:
+            - tahap: "review"
+              aksi:
+                - "distribusi_reviewer"
+                - "tracking_status"
+                - "reminder_otomatis"
+            - tahap: "approval"
+              aksi:
+                - "validasi_digital"
+                - "penyimpanan_aman"
+                - "notifikasi_terkait"

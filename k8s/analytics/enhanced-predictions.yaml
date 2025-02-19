@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: enhanced-predictions
+  namespace: analytics
+data:
+  prediksi_kegagalan_waterproofing.yaml: |
+    model:
+      analisis_risiko:
+        parameter:
+          - faktor: "kondisi_lingkungan"
+            variabel:
+              - "curah_hujan"
+              - "tingkat_kelembaban"
+              - "paparan_uv"
+          - faktor: "aplikasi"
+            variabel:
+              - "kualitas_permukaan"
+              - "metode_aplikasi"
+              - "kondisi_substrate"
+        pencegahan:
+          strategi:
+            - "perbaikan_metode"
+            - "pemilihan_material"
+            - "jadwal_optimal"
+
+  prediksi_performa_facade.yaml: |
+    model:
+      analisis_kinerja:
+        parameter:
+          - aspek: "thermal"
+            variabel:
+              - "heat_gain"
+              - "kondensasi"
+              - "thermal_bridging"
+          - aspek: "struktural"
+            variabel:
+              - "defleksi"
+              - "joint_movement"
+              - "water_penetration"
+        optimasi:
+          metode:
+            - "thermal_modeling"
+            - "structural_analysis"
+            - "weather_simulation"
+
+  prediksi_kegagalan_mekanikal.yaml: |
+    model:
+      analisis_sistem:
+        parameter:
+          - komponen: "chiller"
+            variabel:
+              - "cop_value"
+              - "refrigerant_pressure"
+              - "water_temperature"
+          - komponen: "ahus"
+            variabel:
+              - "air_flow"
+              - "static_pressure"
+              - "filter_condition"
+        maintenance:
+          predictive:
+            - "vibration_analysis"
+            - "oil_analysis"
+            - "thermal_imaging"
+
+  prediksi_masalah_listrik.yaml: |
+    model:
+      analisis_electrical:
+        parameter:
+          - sistem: "distribution"
+            variabel:
+              - "load_balance"
+              - "power_factor"
+              - "harmonic_distortion"
+          - sistem: "protection"
+            variabel:
+              - "breaker_status"
+              - "insulation_resistance"
+              - "grounding_integrity"
+        monitoring:
+          real_time:
+            - "power_quality"
+            - "thermal_condition"
+            - "equipment_status"

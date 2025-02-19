@@ -1,0 +1,52 @@
+apiVersion: audit.k8s.io/v1
+kind: Policy
+rules:
+  # Log all requests at the Metadata level
+  - level: Metadata
+    resources:
+    - group: ""
+      resources: ["pods", "services", "configmaps"]
+
+  # Log pod changes at request and response level
+  - level: RequestResponse
+    resources:
+    - group: ""
+      resources: ["pods"]
+      verbs: ["create", "update", "patch", "delete"]
+
+  # Log persistent volume changes
+  - level: Request
+    resources:
+    - group: ""
+      resources: ["persistentvolumes", "persistentvolumeclaims"]
+      verbs: ["create", "update", "patch", "delete"]
+
+  # Log authentication and authorization at request level
+  - level: Request
+    resources:
+    - group: "authentication.k8s.io"
+      resources: ["*"]
+    - group: "authorization.k8s.io"
+      resources: ["*"]
+
+  # Log security-related objects
+  - level: RequestResponse
+    resources:
+    - group: ""
+      resources: ["secrets", "serviceaccounts"]
+      verbs: ["create", "update", "patch", "delete"]
+    - group: "rbac.authorization.k8s.io"
+      resources: ["*"]
+      verbs: ["create", "update", "patch", "delete"]
+
+  # Log network policy changes
+  - level: RequestResponse
+    resources:
+    - group: "networking.k8s.io"
+      resources: ["networkpolicies"]
+      verbs: ["create", "update", "patch", "delete"]
+
+  # Catch-all rule to log metadata for everything else
+  - level: Metadata
+    omitStages:
+      - "RequestReceived"

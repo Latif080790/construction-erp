@@ -1,0 +1,94 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: specialized-metrics
+  namespace: monitoring
+data:
+  keberlanjutan_lingkungan.yaml: |
+    metrik:
+      dampak_lingkungan:
+        parameter:
+          - nama: "emisi_karbon"
+            pengukuran:
+              metode: "sensor_real_time"
+              interval: "per_jam"
+              batas:
+                peringatan: "> 100 kg CO2/hari"
+                kritis: "> 150 kg CO2/hari"
+          - nama: "penggunaan_air"
+            pengukuran:
+              metode: "flow_meter_digital"
+              interval: "real_time"
+              batas:
+                peringatan: "> target_harian + 20%"
+                kritis: "> target_harian + 35%"
+        pelaporan:
+          otomatis:
+            - tipe: "laporan_harian"
+              penerima: ["manajer_lingkungan", "direktur_proyek"]
+            - tipe: "dashboard_real_time"
+              pembaruan: "setiap_15_menit"
+
+  efisiensi_energi.yaml: |
+    metrik:
+      konsumsi_energi:
+        pemantauan:
+          - area: "peralatan_berat"
+            parameter:
+              - "konsumsi_bahan_bakar"
+              - "efisiensi_operasi"
+              - "waktu_idle"
+          - area: "fasilitas_proyek"
+            parameter:
+              - "penggunaan_listrik"
+              - "sistem_pendingin"
+              - "pencahayaan"
+        optimasi:
+          - tipe: "penjadwalan_cerdas"
+            kriteria:
+              - "beban_puncak"
+              - "tarif_listrik"
+              - "kebutuhan_operasional"
+
+  produktivitas_pekerja.yaml: |
+    metrik:
+      kinerja_individu:
+        tracking:
+          - aspek: "efisiensi"
+            parameter:
+              - "waktu_per_tugas"
+              - "kualitas_output"
+              - "kepatuhan_prosedur"
+          - aspek: "keahlian"
+            parameter:
+              - "level_kompetensi"
+              - "sertifikasi"
+              - "pengalaman_proyek"
+        pengembangan:
+          - program: "pelatihan_berkelanjutan"
+            evaluasi:
+              - "pre_test"
+              - "praktik_lapangan"
+              - "post_test"
+
+  manajemen_risiko.yaml: |
+    metrik:
+      identifikasi_risiko:
+        parameter:
+          - kategori: "teknis"
+            indikator:
+              - "kompleksitas_desain"
+              - "kondisi_tanah"
+              - "metode_konstruksi"
+          - kategori: "non_teknis"
+            indikator:
+              - "kondisi_pasar"
+              - "perubahan_regulasi"
+              - "kondisi_sosial"
+        mitigasi:
+          otomatis:
+            - trigger: "risiko_tinggi"
+              tindakan:
+                - "analisis_mendalam"
+                - "rencana_kontingensi"
+                - "alokasi_sumber_daya"

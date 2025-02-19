@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: specific-roles
+  namespace: monitoring
+data:
+  surveyor.yaml: |
+    fitur:
+      pengukuran:
+        peralatan:
+          - tipe: "total_station"
+            fungsi:
+              - "pengukuran_koordinat"
+              - "staking_out"
+              - "as_built_drawing"
+          - tipe: "laser_scanner"
+            fungsi:
+              - "pemodelan_3d"
+              - "volume_calculation"
+              - "deformation_monitoring"
+        reporting:
+          otomatis:
+            - "laporan_pengukuran"
+            - "perbandingan_design"
+            - "analisis_deviasi"
+
+  estimator.yaml: |
+    fitur:
+      perhitungan:
+        volume:
+          - metode: "bim_based"
+            parameter:
+              - "quantity_takeoff"
+              - "waste_factor"
+              - "complexity_factor"
+          - metode: "conventional"
+            parameter:
+              - "gambar_2d"
+              - "spesifikasi"
+              - "faktor_koreksi"
+        biaya:
+          analisis:
+            - "harga_satuan"
+            - "produktivitas"
+            - "overhead_factor"
+
+  scheduler.yaml: |
+    fitur:
+      penjadwalan:
+        metode:
+          - tipe: "critical_path"
+            parameter:
+              - "durasi_aktivitas"
+              - "dependency"
+              - "float_time"
+          - tipe: "resource_loaded"
+            parameter:
+              - "ketersediaan_sumber_daya"
+              - "produktivitas"
+              - "constraint"
+        optimasi:
+          algoritma:
+            - "resource_leveling"
+            - "cost_optimization"
+            - "risk_based_scheduling"
+
+  quality_controller.yaml: |
+    fitur:
+      pemeriksaan:
+        metode:
+          - tipe: "visual_inspection"
+            parameter:
+              - "checklist_standar"
+              - "foto_dokumentasi"
+              - "marking_defect"
+          - tipe: "instrumental_test"
+            parameter:
+              - "kalibrasi_alat"
+              - "standar_pengujian"
+              - "interpretasi_hasil"
+        reporting:
+          sistem:
+            - "dokumentasi_digital"
+            - "tracking_perbaikan"
+            - "analisis_trend"

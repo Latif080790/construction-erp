@@ -1,0 +1,72 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: construction-phase-metrics
+  namespace: monitoring
+spec:
+  groups:
+    - name: foundation_phase
+      rules:
+        - record: foundation_soil_compaction
+          expr: avg(soil_density_readings) by (location)
+        - record: foundation_moisture_content
+          expr: avg(soil_moisture_readings) by (location)
+        - record: foundation_depth_compliance
+          expr: min(foundation_depth / required_depth) by (location)
+        - record: concrete_strength_tests
+          expr: avg(concrete_psi_readings) by (sample_location)
+
+    - name: structural_phase
+      rules:
+        - record: steel_installation_accuracy
+          expr: count(steel_position_deviation > tolerance) by (floor)
+        - record: concrete_curing_conditions
+          expr: avg(temperature_readings) by (floor, section)
+        - record: floor_levelness
+          expr: max(floor_elevation_deviation) by (floor)
+        - record: column_verticality
+          expr: max(column_deviation_angle) by (column_id)
+
+    - name: mep_phase
+      rules:
+        - record: pipe_pressure_tests
+          expr: min(pressure_test_results) by (system)
+        - record: electrical_load_balance
+          expr: stddev(phase_current_readings) by (panel)
+        - record: hvac_airflow_rates
+          expr: avg(airflow_measurements) by (zone)
+        - record: plumbing_leak_tests
+          expr: sum(leak_test_failures) by (system)
+
+    - name: finishing_phase
+      rules:
+        - record: surface_flatness
+          expr: avg(surface_deviation_readings) by (room)
+        - record: paint_thickness
+          expr: avg(coating_thickness) by (wall)
+        - record: door_window_alignment
+          expr: count(alignment_deviation > tolerance) by (floor)
+        - record: floor_finish_quality
+          expr: avg(finish_inspection_score) by (room)
+
+    - name: site_work_phase
+      rules:
+        - record: excavation_accuracy
+          expr: max(excavation_deviation) by (zone)
+        - record: drainage_slope
+          expr: avg(slope_measurements) by (section)
+        - record: compaction_density
+          expr: avg(density_readings) by (area)
+        - record: erosion_control
+          expr: sum(sediment_accumulation) by (control_point)
+
+    - name: commissioning_phase
+      rules:
+        - record: system_performance_tests
+          expr: avg(system_efficiency) by (system_type)
+        - record: equipment_startup_success
+          expr: sum(startup_failures) by (equipment_type)
+        - record: building_pressure_balance
+          expr: avg(pressure_differential) by (floor)
+        - record: energy_consumption_baseline
+          expr: sum(power_consumption) by (system)

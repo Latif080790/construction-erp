@@ -1,0 +1,240 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: system-overview-dashboard
+  namespace: monitoring
+data:
+  system-status.json: |
+    {
+      "dashboard": {
+        "title": "Status Sistem ERP Konstruksi",
+        "refresh": "30s",
+        "panels": [
+          {
+            "title": "Status Komponen Utama",
+            "type": "status_panel",
+            "components": [
+              {
+                "name": "Sistem Analitik",
+                "metrics": [
+                  "model_predictions_accuracy",
+                  "analysis_processing_time",
+                  "active_predictions"
+                ]
+              },
+              {
+                "name": "Sistem Monitoring",
+                "metrics": [
+                  "active_alerts",
+                  "sensor_status",
+                  "data_collection_rate"
+                ]
+              },
+              {
+                "name": "Sistem Otomasi",
+                "metrics": [
+                  "workflow_success_rate",
+                  "automation_response_time",
+                  "active_workflows"
+                ]
+              }
+            ]
+          },
+          {
+            "title": "Metrik Real-time",
+            "type": "graph_panel",
+            "metrics": [
+              {
+                "category": "Keselamatan",
+                "items": [
+                  "incident_rate",
+                  "safety_compliance",
+                  "active_hazards"
+                ]
+              },
+              {
+                "category": "Kualitas",
+                "items": [
+                  "defect_rate",
+                  "inspection_status",
+                  "material_conformance"
+                ]
+              },
+              {
+                "category": "Progres",
+                "items": [
+                  "schedule_variance",
+                  "resource_utilization",
+                  "milestone_achievement"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+
+  component-details.json: |
+    {
+      "dashboard": {
+        "title": "Detail Komponen Sistem",
+        "refresh": "1m",
+        "panels": [
+          {
+            "title": "Model Prediksi",
+            "type": "table",
+            "models": [
+              {
+                "name": "Prediksi Struktural",
+                "accuracy": "current_accuracy",
+                "last_update": "timestamp",
+                "status": "active/inactive"
+              },
+              {
+                "name": "Prediksi MEP",
+                "accuracy": "current_accuracy",
+                "last_update": "timestamp",
+                "status": "active/inactive"
+              },
+              {
+                "name": "Prediksi Jadwal",
+                "accuracy": "current_accuracy",
+                "last_update": "timestamp",
+                "status": "active/inactive"
+              }
+            ]
+          },
+          {
+            "title": "Alur Kerja Aktif",
+            "type": "list",
+            "workflows": [
+              {
+                "name": "Inspeksi Kualitas",
+                "status": "current_status",
+                "progress": "percentage",
+                "next_action": "scheduled_action"
+              },
+              {
+                "name": "Manajemen Material",
+                "status": "current_status",
+                "progress": "percentage",
+                "next_action": "scheduled_action"
+              },
+              {
+                "name": "Pemeliharaan Preventif",
+                "status": "current_status",
+                "progress": "percentage",
+                "next_action": "scheduled_action"
+              }
+            ]
+          }
+        ]
+      }
+    }
+
+  test-results.json: |
+    {
+      "dashboard": {
+        "title": "Hasil Pengujian Sistem",
+        "refresh": "5m",
+        "panels": [
+          {
+            "title": "Performa Sistem",
+            "type": "gauge",
+            "metrics": [
+              {
+                "name": "Response Time",
+                "current": "current_value",
+                "threshold": "warning_threshold"
+              },
+              {
+                "name": "System Load",
+                "current": "current_value",
+                "threshold": "warning_threshold"
+              },
+              {
+                "name": "Memory Usage",
+                "current": "current_value",
+                "threshold": "warning_threshold"
+              }
+            ]
+          },
+          {
+            "title": "Hasil Tes Fitur",
+            "type": "status_list",
+            "features": [
+              {
+                "name": "Prediksi Otomatis",
+                "status": "pass/fail",
+                "last_test": "timestamp",
+                "coverage": "percentage"
+              },
+              {
+                "name": "Alert System",
+                "status": "pass/fail",
+                "last_test": "timestamp",
+                "coverage": "percentage"
+              },
+              {
+                "name": "Workflow Automation",
+                "status": "pass/fail",
+                "last_test": "timestamp",
+                "coverage": "percentage"
+              }
+            ]
+          }
+        ]
+      }
+    }
+
+  real-time-metrics.json: |
+    {
+      "dashboard": {
+        "title": "Metrik Real-time Sistem",
+        "refresh": "10s",
+        "panels": [
+          {
+            "title": "Kinerja Proyek",
+            "type": "time_series",
+            "metrics": [
+              {
+                "name": "Progress Fisik",
+                "data": "percentage_complete",
+                "target": "planned_progress"
+              },
+              {
+                "name": "Produktivitas",
+                "data": "actual_productivity",
+                "target": "planned_productivity"
+              },
+              {
+                "name": "Efisiensi Biaya",
+                "data": "cost_performance_index",
+                "target": "planned_efficiency"
+              }
+            ]
+          },
+          {
+            "title": "Status Sumber Daya",
+            "type": "resource_usage",
+            "resources": [
+              {
+                "name": "Tenaga Kerja",
+                "current": "current_utilization",
+                "capacity": "max_capacity"
+              },
+              {
+                "name": "Peralatan",
+                "current": "current_utilization",
+                "capacity": "max_capacity"
+              },
+              {
+                "name": "Material",
+                "current": "current_stock",
+                "minimum": "min_required"
+              }
+            ]
+          }
+        ]
+      }
+    }

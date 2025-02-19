@@ -1,0 +1,134 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: automated-responses
+  namespace: automation
+data:
+  safety-responses.yaml: |
+    workflows:
+      - trigger: "high_risk_detection"
+        conditions:
+          - metric: "risk_score"
+            threshold: ">= 0.8"
+        actions:
+          - type: "immediate_notification"
+            targets: ["safety_officer", "site_supervisor"]
+            channels: ["sms", "email", "site_alarm"]
+          - type: "area_lockdown"
+            parameters:
+              area_id: "${affected_area}"
+              duration: "until_cleared"
+          - type: "team_reassignment"
+            parameters:
+              teams: "${affected_teams}"
+              temporary_work: "low_risk_tasks"
+
+      - trigger: "repeated_safety_violation"
+        conditions:
+          - metric: "violation_count"
+            threshold: ">= 3"
+            period: "24h"
+        actions:
+          - type: "mandatory_training"
+            parameters:
+              team: "${violating_team}"
+              training_module: "safety_refresher"
+          - type: "supervisor_review"
+            deadline: "next_shift"
+          - type: "incident_report"
+            template: "violation_investigation"
+
+  quality-responses.yaml: |
+    workflows:
+      - trigger: "quality_deviation"
+        conditions:
+          - metric: "defect_rate"
+            threshold: "> 5%"
+            period: "shift"
+        actions:
+          - type: "production_pause"
+            parameters:
+              area: "${affected_area}"
+              duration: "quality_review"
+          - type: "quality_inspection"
+            parameters:
+              scope: "enhanced"
+              inspector: "quality_team_lead"
+          - type: "root_cause_analysis"
+            deadline: "24h"
+
+      - trigger: "material_failure"
+        conditions:
+          - metric: "test_results"
+            status: "failed"
+        actions:
+          - type: "material_quarantine"
+            parameters:
+              batch: "${failed_batch}"
+              location: "quarantine_area"
+          - type: "supplier_notification"
+            template: "quality_issue_report"
+          - type: "replacement_order"
+            priority: "urgent"
+
+  schedule-responses.yaml: |
+    workflows:
+      - trigger: "delay_prediction"
+        conditions:
+          - metric: "completion_forecast"
+            deviation: "> 5d"
+        actions:
+          - type: "schedule_optimization"
+            parameters:
+              scope: "affected_activities"
+              strategy: "fast_track"
+          - type: "resource_reallocation"
+            parameters:
+              priority: "critical_path"
+          - type: "stakeholder_notification"
+            template: "delay_mitigation_plan"
+
+      - trigger: "resource_shortage"
+        conditions:
+          - metric: "resource_availability"
+            threshold: "< 80%"
+            forecast: "next_week"
+        actions:
+          - type: "procurement_request"
+            priority: "high"
+          - type: "schedule_adjustment"
+            parameters:
+              activities: "${affected_tasks}"
+              strategy: "resource_leveling"
+          - type: "alternative_sourcing"
+            deadline: "48h"
+
+  environmental-responses.yaml: |
+    workflows:
+      - trigger: "environmental_threshold_breach"
+        conditions:
+          - metric: "dust_level"
+            threshold: "> 150μg/m3"
+          - metric: "noise_level"
+            threshold: "> 85dB"
+        actions:
+          - type: "work_modification"
+            parameters:
+              activities: "${high_impact_activities}"
+              modifications: "dust_control_measures"
+          - type: "monitoring_increase"
+            frequency: "hourly"
+          - type: "compliance_report"
+            template: "environmental_incident"
+
+      - trigger: "waste_management_alert"
+        conditions:
+          - metric: "waste_segregation"
+            compliance: "< 90%"
+        actions:
+          - type: "segregation_audit"
+            priority: "immediate"
+          - type: "team_training"
+            focus: "waste_management"
+          - type: "process_review"
+            deadline: "week_end"

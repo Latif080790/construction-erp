@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: incident-response-procedures
+  namespace: security
+data:
+  data-breach-response.yaml: |
+    procedures:
+      - name: "Data Breach Response"
+        steps:
+          - order: 1
+            action: "Isolate Affected Systems"
+            commands:
+              - "kubectl cordon node ${affected_node}"
+              - "kubectl drain node ${affected_node}"
+          - order: 2
+            action: "Secure Evidence"
+            commands:
+              - "kubectl logs pod/${affected_pod} > /evidence/pod_logs.txt"
+              - "kubectl describe pod/${affected_pod} > /evidence/pod_details.txt"
+          - order: 3
+            action: "Notify Stakeholders"
+            notification:
+              channels: ["security-team", "legal-team", "management"]
+              template: "security-breach-notification"
+
+  unauthorized-access-response.yaml: |
+    procedures:
+      - name: "Unauthorized Access Response"
+        steps:
+          - order: 1
+            action: "Block Access"
+            commands:
+              - "kubectl delete rolebinding ${compromised_binding}"
+              - "kubectl delete token ${compromised_token}"
+          - order: 2
+            action: "Audit Access Logs"
+            commands:
+              - "kubectl logs -n security audit-pod > /evidence/access_logs.txt"
+          - order: 3
+            action: "Reset Credentials"
+            commands:
+              - "kubectl create secret generic ${new_credentials}"
+
+  document-tampering-response.yaml: |
+    procedures:
+      - name: "Document Tampering Response"
+        steps:
+          - order: 1
+            action: "Lock Document Access"
+            commands:
+              - "kubectl patch configmap document-permissions --patch '{\"data\":{\"${doc_id}\": \"locked\"}}'"
+          - order: 2
+            action: "Restore from Backup"
+            commands:
+              - "velero restore create --from-backup=${backup_name}"
+          - order: 3
+            action: "Audit Document History"
+            commands:
+              - "kubectl exec ${audit-pod} -- /scripts/audit-doc-history.sh ${doc_id}"
+
+  safety-incident-response.yaml: |
+    procedures:
+      - name: "Safety Record Incident Response"
+        steps:
+          - order: 1
+            action: "Freeze Safety Records"
+            commands:
+              - "kubectl annotate namespace safety-records audit.security/frozen=true"
+          - order: 2
+            action: "Generate Audit Report"
+            commands:
+              - "kubectl exec ${audit-pod} -- /scripts/safety-audit.sh"
+          - order: 3
+            action: "Notify Safety Officer"
+            notification:
+              channels: ["safety-team", "site-management"]
+              template: "safety-record-incident"

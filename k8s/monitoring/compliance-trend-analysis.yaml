@@ -1,0 +1,129 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: compliance-trend-analyzer
+  namespace: monitoring
+spec:
+  schedule: "0 */4 * * *"  # Every 4 hours
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: trend-analyzer
+            image: compliance-analyzer:latest
+            env:
+            - name: ANALYSIS_PERIOD
+              value: "30d"
+            - name: TREND_THRESHOLD
+              value: "0.05"
+            volumeMounts:
+            - name: trend-config
+              mountPath: /etc/analyzer/config
+          volumes:
+          - name: trend-config
+            configMap:
+              name: trend-analysis-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trend-analysis-config
+  namespace: monitoring
+data:
+  analysis-rules.yaml: |
+    trends:
+      safety_metrics:
+        metrics:
+          - incident_rate
+          - near_miss_frequency
+          - safety_compliance
+        analysis:
+          period: "30d"
+          comparison: "previous_period"
+          threshold: 0.05
+        alerts:
+          - condition: "negative_trend"
+            duration: "3d"
+            notification: "safety_team"
+
+      quality_metrics:
+        metrics:
+          - defect_rate
+          - rework_percentage
+          - first_time_quality
+        analysis:
+          period: "14d"
+          comparison: "rolling_average"
+          threshold: 0.03
+        alerts:
+          - condition: "quality_degradation"
+            duration: "2d"
+            notification: "quality_team"
+
+      environmental_metrics:
+        metrics:
+          - dust_levels
+          - noise_compliance
+          - waste_recycling
+        analysis:
+          period: "7d"
+          comparison: "baseline"
+          threshold: 0.1
+        alerts:
+          - condition: "environmental_impact"
+            duration: "1d"
+            notification: "environmental_team"
+
+  trend-reports.yaml: |
+    reports:
+      daily_summary:
+        metrics:
+          - safety_trend
+          - quality_trend
+          - environmental_trend
+        format:
+          - type: "executive_summary"
+            recipients: ["project_manager"]
+          - type: "detailed_analysis"
+            recipients: ["department_heads"]
+
+      weekly_analysis:
+        metrics:
+          - compliance_trends
+          - violation_patterns
+          - improvement_areas
+        format:
+          - type: "trend_report"
+            recipients: ["management_team"]
+          - type: "action_items"
+            recipients: ["team_leads"]
+
+  prediction-rules.yaml: |
+    predictions:
+      safety_incidents:
+        model: "time_series"
+        features:
+          - historical_incidents
+          - weather_conditions
+          - work_intensity
+        horizon: "7d"
+        confidence: 0.95
+
+      quality_issues:
+        model: "regression"
+        features:
+          - worker_experience
+          - material_quality
+          - weather_impact
+        horizon: "14d"
+        confidence: 0.90
+
+      environmental_compliance:
+        model: "pattern_matching"
+        features:
+          - seasonal_factors
+          - project_phase
+          - activity_level
+        horizon: "30d"
+        confidence: 0.85

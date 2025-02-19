@@ -1,0 +1,79 @@
+global:
+  environment: staging
+  domain: staging.erp-construction.com
+
+backend:
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+  env:
+    DJANGO_SETTINGS_MODULE: core.settings.staging
+    DEBUG: "False"
+    ALLOWED_HOSTS: staging.erp-construction.com
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      cert-manager.io/cluster-issuer: letsencrypt-staging
+
+frontend:
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 200m
+      memory: 512Mi
+  env:
+    NODE_ENV: staging
+    REACT_APP_API_URL: https://staging.erp-construction.com/api
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      cert-manager.io/cluster-issuer: letsencrypt-staging
+
+database:
+  size: 10Gi
+  backup:
+    enabled: true
+    schedule: "0 2 * * *"
+    retention: 7
+
+redis:
+  persistence:
+    size: 5Gi
+
+monitoring:
+  enabled: true
+  retention: 5d
+  grafana:
+    adminPassword: staging-admin-password
+    ingress:
+      enabled: true
+      host: grafana.staging.erp-construction.com
+
+logging:
+  enabled: true
+  elasticsearch:
+    replicas: 1
+    persistence:
+      size: 20Gi
+  kibana:
+    ingress:
+      enabled: true
+      host: kibana.staging.erp-construction.com
+
+security:
+  networkPolicies: true
+  podSecurityPolicies: true
+  securityContext:
+    enabled: true
+  containerSecurityContext:
+    enabled: true

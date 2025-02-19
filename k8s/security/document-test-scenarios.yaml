@@ -1,0 +1,104 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: document-test-scenarios
+  namespace: security
+data:
+  blueprint-tests.yaml: |
+    scenarios:
+      - name: "blueprint_version_control"
+        steps:
+          - action: "upload_new_version"
+            validation:
+              - "previous_version_archived"
+              - "change_log_updated"
+              - "approvers_notified"
+          - action: "concurrent_modification"
+            validation:
+              - "lock_mechanism_active"
+              - "conflict_resolution_triggered"
+
+      - name: "blueprint_watermark_validation"
+        steps:
+          - action: "verify_watermark"
+            checks:
+              - "position_correct"
+              - "text_readable"
+              - "tamper_evident"
+          - action: "attempt_watermark_removal"
+            validation:
+              - "removal_prevented"
+              - "alert_generated"
+
+  structural-calculation-tests.yaml: |
+    scenarios:
+      - name: "load_calculation_validation"
+        steps:
+          - action: "submit_calculations"
+            checks:
+              - "formula_integrity"
+              - "safety_factor_compliance"
+              - "unit_consistency"
+          - action: "modify_critical_values"
+            validation:
+              - "change_tracking_active"
+              - "engineer_approval_required"
+
+      - name: "seismic_analysis_validation"
+        steps:
+          - action: "run_seismic_calculations"
+            checks:
+              - "zone_parameters_correct"
+              - "force_calculations_valid"
+              - "displacement_limits_checked"
+
+  permit-document-tests.yaml: |
+    scenarios:
+      - name: "permit_expiration_handling"
+        steps:
+          - action: "approach_expiration"
+            triggers:
+              - "advance_notification"
+              - "renewal_workflow"
+              - "stakeholder_alerts"
+          - action: "permit_renewal"
+            validation:
+              - "updated_requirements_checked"
+              - "fee_calculation_correct"
+
+      - name: "permit_amendment_validation"
+        steps:
+          - action: "submit_amendment"
+            checks:
+              - "change_scope_documented"
+              - "approval_chain_followed"
+              - "revision_tracking_active"
+
+  site-survey-tests.yaml: |
+    scenarios:
+      - name: "survey_data_validation"
+        steps:
+          - action: "import_survey_data"
+            checks:
+              - "coordinate_system_valid"
+              - "elevation_data_complete"
+              - "boundary_points_verified"
+          - action: "modify_survey_points"
+            validation:
+              - "change_tracking_active"
+              - "surveyor_approval_required"
+
+  contract-document-tests.yaml: |
+    scenarios:
+      - name: "contract_clause_validation"
+        steps:
+          - action: "modify_legal_terms"
+            checks:
+              - "standard_clauses_present"
+              - "custom_terms_highlighted"
+              - "legal_review_triggered"
+          - action: "signature_workflow"
+            validation:
+              - "all_parties_signed"
+              - "timestamp_recorded"
+              - "distribution_logged"

@@ -1,0 +1,80 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: erp-additional-alerts
+  namespace: monitoring
+spec:
+  groups:
+  - name: erp-system
+    rules:
+    - alert: PodCrashLooping
+      expr: |
+        rate(kube_pod_container_status_restarts_total{namespace="erp"}[15m]) * 60 * 5 > 5
+      for: 15m
+      labels:
+        severity: critical
+      annotations:
+        summary: Pod is crash looping
+        description: Pod {{ $labels.pod }} is restarting frequently
+
+    - alert: HighCPUUsage
+      expr: |
+        container_cpu_usage_seconds_total{container=~"erp-.*"} 
+        / 
+        container_spec_cpu_quota{container=~"erp-.*"} > 0.85
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: High CPU usage
+        description: Container CPU usage is above 85% for 15 minutes
+
+    - alert: DatabaseConnectionIssues
+      expr: |
+        rate(django_db_errors_total[5m]) > 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: Database connection issues
+        description: Application is experiencing database connection issues
+
+    - alert: SlowQueries
+      expr: |
+        histogram_quantile(0.95, sum(rate(django_db_query_duration_seconds_bucket[5m])) by (le)) > 1
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Slow database queries
+        description: 95th percentile of query duration is above 1 second
+
+    - alert: HighRedisMemory
+      expr: |
+        redis_memory_used_bytes / redis_memory_max_bytes > 0.8
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: High Redis memory usage
+        description: Redis memory usage is above 80%
+
+    - alert: APIEndpointErrors
+      expr: |
+        sum(rate(http_requests_total{status=~"5..", path=~"/api/.*"}[5m])) by (path) > 0.1
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: High API endpoint errors
+        description: API endpoint {{ $labels.path }} is experiencing high error rates
+
+    - alert: JWTAuthFailures
+      expr: |
+        rate(jwt_auth_failures_total[5m]) > 10
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: High JWT authentication failures
+        description: Unusual number of JWT authentication failures detected
